@@ -15,10 +15,21 @@ class PostController: UIViewController {
         let label = UILabel()
         label.text = "추천 게시글"
         label.font = .systemFont(ofSize: 18, weight: .semibold)
-        label.textColor = .black
+        label.textColor = .fontGray
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    let addButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("+", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemBlue
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
     }()
     
     // MARK: - Lifecycle
@@ -40,9 +51,13 @@ class PostController: UIViewController {
     func configureUI() {
         view.backgroundColor = .white
         
+        view.addSubview(addButton)
         view.addSubview(postLabel)
         
         NSLayoutConstraint.activate([
+            addButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -27),
+            
             postLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             postLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
         ])

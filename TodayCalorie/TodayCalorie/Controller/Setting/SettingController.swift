@@ -15,7 +15,7 @@ class SettingController: UIViewController {
         let label = UILabel()
         label.text = "설정"
         label.font = .systemFont(ofSize: 18, weight: .semibold)
-        label.textColor = .black
+        label.textColor = .fontGray
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

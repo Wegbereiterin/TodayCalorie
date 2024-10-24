@@ -16,6 +16,8 @@
 		618F33632CAEDD87009D071B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 618F33622CAEDD87009D071B /* Base */; };
 		618F33652CAEDD88009D071B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 618F33642CAEDD88009D071B /* Assets.xcassets */; };
 		618F33682CAEDD88009D071B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 618F33672CAEDD88009D071B /* Base */; };
+		61A099A22CCA883A00339B66 /* CalorieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A099A12CCA883A00339B66 /* CalorieCell.swift */; };
+		61A099A72CCA8DF700339B66 /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A099A62CCA8DF700339B66 /* Food.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		618F33642CAEDD88009D071B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		618F33672CAEDD88009D071B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		618F33692CAEDD88009D071B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61A099A12CCA883A00339B66 /* CalorieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieCell.swift; sourceTree = "<group>"; };
+		61A099A62CCA8DF700339B66 /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +87,7 @@
 			children = (
 				618F335F2CAEDD87009D071B /* ViewController.swift */,
 				6104BE162CC75FFB00F6CF69 /* MainTabController.swift */,
+				61A099A12CCA883A00339B66 /* CalorieCell.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -125,11 +130,20 @@
 				618F33692CAEDD88009D071B /* Info.plist */,
 				6104BE152CC75F7500F6CF69 /* Root */,
 				6104BE142CC75F6000F6CF69 /* Controller */,
+				61A099A32CCA8DCF00339B66 /* Model */,
 				6104BE132CC75F5700F6CF69 /* Utils */,
 				6104BE112CC75F0D00F6CF69 /* API */,
 				618F33642CAEDD88009D071B /* Assets.xcassets */,
 			);
 			path = TodayCalorie;
+			sourceTree = "<group>";
+		};
+		61A099A32CCA8DCF00339B66 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				61A099A62CCA8DF700339B66 /* Food.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,6 +221,8 @@
 				618F33602CAEDD87009D071B /* ViewController.swift in Sources */,
 				618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */,
 				6104BE172CC75FFB00F6CF69 /* MainTabController.swift in Sources */,
+				61A099A22CCA883A00339B66 /* CalorieCell.swift in Sources */,
+				61A099A72CCA8DF700339B66 /* Food.swift in Sources */,
 				618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */,
 				6104BE1E2CC9476500F6CF69 /* PostController.swift in Sources */,
 			);
