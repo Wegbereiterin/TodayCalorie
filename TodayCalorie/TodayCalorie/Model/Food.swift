@@ -18,4 +18,5 @@ struct Food: Codable {
     var like: Bool // 좋아요
     var NumberOfLike: Int // 총 좋아요 수
     var userName: String // 작성자
+    var share: Bool
 }

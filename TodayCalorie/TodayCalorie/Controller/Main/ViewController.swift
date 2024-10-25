@@ -60,33 +60,6 @@ class ViewController: UIViewController {
         return label
     }()
     
-    let addButton: UIButton = {
-        let button = UIButton()
-        
-        let plusImage = UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 25))
-        
-        button.setImage(plusImage, for: .normal)
-        button.tintColor = .black
-        
-        button.backgroundColor = .main
-
-        button.layer.cornerRadius = 30
-        
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 2)
-        button.layer.shadowRadius = 4
-        button.layer.shadowOpacity = 0.2
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 60),
-            button.heightAnchor.constraint(equalToConstant: 60)
-        ])
-        
-        return button
-    }()
-    
     // Progress Bar
     let progressBar: UIProgressView = {
         let progressBar = UIProgressView(frame: .zero)
@@ -130,6 +103,27 @@ class ViewController: UIViewController {
         return tableView
     }()
     
+    let menuItems = [
+        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "microphone")!, title: "음성인식", action: {
+            
+        }),
+        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "pencil")!, title: "이미지없이 글작성", action: {
+            
+        }),
+        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "photo")!, title: "이미지선택", action: {
+            
+        }),
+        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "camera")!, title: "사진촬영", action: {
+            
+        })
+    ]
+    
+    lazy var floatingButton: FloatingMenuButton = {
+        let button = FloatingMenuButton(items: menuItems)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -156,7 +150,7 @@ class ViewController: UIViewController {
         view.addSubview(progressBar)
         view.addSubview(divider)
         view.addSubview(tableView)
-        view.addSubview(addButton)
+        view.addSubview(floatingButton)
         
         NSLayoutConstraint.activate([
             
@@ -189,8 +183,8 @@ class ViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            addButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
-            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -27)
+            floatingButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+            floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -27)
             
             ])
             
