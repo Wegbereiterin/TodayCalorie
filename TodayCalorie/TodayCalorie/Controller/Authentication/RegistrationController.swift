@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseAuth
 
 class RegistrationController: UIViewController {
     
@@ -13,9 +15,9 @@ class RegistrationController: UIViewController {
     
     private let registTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "TodayCalorie"
-        label.font = .systemFont(ofSize: 48, weight: .semibold)
-        label.textColor = .main
+        label.text = "회원가입"
+        label.font = .systemFont(ofSize: 24, weight: .semibold)
+        label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -50,7 +52,7 @@ class RegistrationController: UIViewController {
         return textField
     }()
     
-    private let loginButton: UIButton = {
+    private lazy var registerButton: UIButton = {
         let button = UIButton()
         button.setTitle("가입하기", for: .normal)
         button.setTitleColor(.black, for: .normal)
@@ -63,6 +65,9 @@ class RegistrationController: UIViewController {
         button.layer.shadowOffset = .zero
         button.layer.shadowRadius = 10
         button.layer.shadowOpacity = 0.2
+        
+        button.addTarget(self, action: #selector(registrationTapped), for: .touchUpInside)
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -73,9 +78,25 @@ class RegistrationController: UIViewController {
         super.viewDidLoad()
         
         configureUI()
+        setNav()
     }
     
     // MARK: - Selectors
+    
+    @objc func registrationTapped() {
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        guard let name = nameTextField.text else { return }
+        
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if let error = error {
+                print("DEBUG: 가입오류 \(error.localizedDescription)")
+                return
+            }
+            
+            print("DEBUG: 로그인 성공 이메일 = \(email)")
+        }
+    }
     
     // MARK: - Helpers
     
@@ -86,7 +107,7 @@ class RegistrationController: UIViewController {
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
         view.addSubview(nameTextField)
-        view.addSubview(loginButton)
+        view.addSubview(registerButton)
         
         NSLayoutConstraint.activate([
             registTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
@@ -104,12 +125,18 @@ class RegistrationController: UIViewController {
             nameTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
             nameTextField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
             
-            loginButton.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 16),
-            loginButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
-            loginButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16)
+            registerButton.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 32),
+            registerButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
+            registerButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+            registerButton.heightAnchor.constraint(equalToConstant: 57)
             
             
             ])
+    }
+    
+    func setNav() {
+        navigationController?.navigationBar.barStyle = .black
+        navigationController?.navigationBar.isHidden = true
     }
     
 }

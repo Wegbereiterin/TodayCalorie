@@ -40,7 +40,7 @@ class LoginController: UIViewController {
         return textField
     }()
     
-    private let loginButton: UIButton = {
+    private lazy var loginButton: UIButton = {
         let button = UIButton()
         button.setTitle("로그인", for: .normal)
         button.setTitleColor(.black, for: .normal)
@@ -53,16 +53,22 @@ class LoginController: UIViewController {
         button.layer.shadowOffset = .zero
         button.layer.shadowRadius = 10
         button.layer.shadowOpacity = 0.2
+        
+        button.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private let registerButton: UIButton = {
+    private lazy var registerButton: UIButton = {
         let button = UIButton()
         button.setTitle("계정이 없으신가요?", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         button.backgroundColor = .clear
+        
+        button.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -77,6 +83,17 @@ class LoginController: UIViewController {
     }
     
     // MARK: - Selectors
+    
+    @objc func loginTapped() {
+        print("Login Tapped")
+    }
+    
+    @objc func registerTapped() {
+        let registrationController = RegistrationController()
+        let navigationController = UINavigationController(rootViewController: registrationController)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true)
+    }
     
     // MARK: - Helpers
     
