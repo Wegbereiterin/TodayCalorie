@@ -71,8 +71,16 @@ class ClassificationViewController: UIViewController {
         let button = UIButton(type: .custom)
         button.setTitle("확인", for: .normal)
         button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         button.backgroundColor = .main
         button.layer.cornerRadius = 10
+        button.layer.shadowColor = UIColor.gray.cgColor
+        button.layer.shadowOpacity = 0.2
+        button.layer.shadowRadius = 4
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.borderColor = UIColor.gray.cgColor
+        button.layer.borderWidth = 1
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
         return button
@@ -124,7 +132,11 @@ class ClassificationViewController: UIViewController {
                 foodCalorie = Int(selectedItem.calories)
             }
 
-            print("Selected food: \(foodName ?? ""), calories: \(foodCalorie ?? 0)")
+            let addFoodController = AddFoodController()
+            addFoodController.configure(image: selectedImage!,
+                                      foodName: foodName ?? "",
+                                      foodCalories: foodCalorie ?? 0)
+            navigationController?.pushViewController(addFoodController, animated: true)
         }
     }
     
