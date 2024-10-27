@@ -33,6 +33,7 @@
 		61D705B92CCE8F7700640F47 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705B82CCE8F7700640F47 /* FirebaseDatabase */; };
 		61D705BB2CCE8F7700640F47 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705BA2CCE8F7700640F47 /* FirebaseFirestore */; };
 		61D705BD2CCE8F7700640F47 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705BC2CCE8F7700640F47 /* FirebaseStorage */; };
+		61E53E2D2CCE9D4400E8DBB1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 61E53E2C2CCE9D4400E8DBB1 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 		61A099A62CCA8DF700339B66 /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 		61D705AD2CCE85AF00640F47 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		61D705AF2CCE863C00640F47 /* RegistrationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationController.swift; sourceTree = "<group>"; };
+		61E53E2C2CCE9D4400E8DBB1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +169,7 @@
 			children = (
 				6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */,
 				618F33692CAEDD88009D071B /* Info.plist */,
+				61E53E2C2CCE9D4400E8DBB1 /* GoogleService-Info.plist */,
 				6104BE152CC75F7500F6CF69 /* Root */,
 				6104BE142CC75F6000F6CF69 /* Controller */,
 				61A099A32CCA8DCF00339B66 /* Model */,
@@ -256,6 +259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				618F33652CAEDD88009D071B /* Assets.xcassets in Resources */,
+				61E53E2D2CCE9D4400E8DBB1 /* GoogleService-Info.plist in Resources */,
 				618F33682CAEDD88009D071B /* Base in Resources */,
 				618F33632CAEDD87009D071B /* Base in Resources */,
 			);
