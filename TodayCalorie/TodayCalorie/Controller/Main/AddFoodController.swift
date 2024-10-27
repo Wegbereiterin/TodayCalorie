@@ -24,10 +24,12 @@ class AddFoodController: UIViewController {
         }
     }
     
+    private var isShare: Bool = false
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "어떤 식사를 하셨나요?"
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.font = .systemFont(ofSize: 24, weight: .semibold)
         label.textColor = .fontGray
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -38,100 +40,115 @@ class AddFoodController: UIViewController {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 15
         imageView.layer.masksToBounds = true
-//        imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private var moringButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("아침", for: .normal)
-        button.setTitleColor(.fontGray, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
-        button.backgroundColor = .white
-        button.layer.cornerRadius = 15
-        
+    private lazy var moringButton: EatTimeButton = {
+        let button = EatTimeButton()
+        button.configure(type: .morning)
+        button.addTarget(self, action: #selector(morningButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private var lunchButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("점심", for: .normal)
-        button.setTitleColor(.fontGray, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
-        button.backgroundColor = .white
-        button.layer.cornerRadius = 15
-        
+    private lazy var lunchButton: EatTimeButton = {
+        let button = EatTimeButton()
+        button.configure(type: .afternoon)
+        button.addTarget(self, action: #selector(lunchButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private var dinnerButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("저녁", for: .normal)
-        button.setTitleColor(.fontGray, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
-        button.backgroundColor = .white
-        button.layer.cornerRadius = 15
-        
+    private lazy var dinnerButton: EatTimeButton = {
+        let button = EatTimeButton()
+        button.configure(type: .evening)
+        button.addTarget(self, action: #selector(dinnerButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private var snackButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("간식", for: .normal)
-        button.setTitleColor(.fontGray, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
-        button.backgroundColor = .white
-        button.layer.cornerRadius = 15
-        
+    private lazy var snackButton: EatTimeButton = {
+        let button = EatTimeButton()
+        button.configure(type: .snack)
+        button.addTarget(self, action: #selector(snackButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     lazy var foodNameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "음식 이름"
-        textField.font = .systemFont(ofSize: 14, weight: .semibold)
+        textField.font = .systemFont(ofSize: 18, weight: .semibold)
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 15
         textField.inputAccessoryView = toolBarKeyboard
-        
+        textField.borderStyle = .none
+        textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
     
     lazy var foodCalorieTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "0 Kcal"
+        textField.placeholder = "0"
         textField.font = .systemFont(ofSize: 12, weight: .regular)
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 15
+        textField.keyboardType = .numberPad
         textField.inputAccessoryView = toolBarKeyboard
-        
+        textField.borderStyle = .none
+        textField.textAlignment = .right
+        textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
     
-    let shareLabel: UILabel = {
+    private let kcalLabel: UILabel = {
         let label = UILabel()
-        label.text = "게시글에 공유"
-        label.font = .systemFont(ofSize: 12, weight: .regular)
-        label.textColor = .white
-        
+        label.text = "Kcal"
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    var shareButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("공유", for: .normal)
-        button.setTitleColor(.fontGray, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
-        button.backgroundColor = .white
-        button.layer.cornerRadius = 15
-        
-        return button
+    private let calorieStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 5
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    private let shareLabel: UILabel = {
+        let label = UILabel()
+        label.text = "게시글에 공유"
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var shareSwitch: UISwitch = {
+        let toggle = UISwitch()
+        toggle.onTintColor = .main
+        toggle.addTarget(self, action: #selector(shareSwitchChanged), for: .valueChanged)
+        toggle.translatesAutoresizingMaskIntoConstraints = false
+        return toggle
+    }()
+    
+    private let shareStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 8
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
     
     private lazy var addButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("확인", for: .normal)
+        button.setTitle("추가", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         button.backgroundColor = .main
@@ -173,7 +190,7 @@ class AddFoodController: UIViewController {
     let buttonStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 10
+        stack.spacing = 5
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
@@ -193,7 +210,7 @@ class AddFoodController: UIViewController {
         let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(btnDoneBarTapped))
         toolbar.sizeToFit()
         toolbar.items = [flexBarButton, doneButton]
-        toolbar.tintColor = .main
+        toolbar.tintColor = .black
         return toolbar
     }()
     
@@ -203,9 +220,8 @@ class AddFoodController: UIViewController {
         view.font = UIFont.systemFont(ofSize: 16)
         view.backgroundColor = .white
         view.layer.cornerRadius = 8
-        view.layer.borderWidth = 1.0
-        view.layer.borderColor = UIColor.gray.cgColor
-        view.textContainerInset = UIEdgeInsets(top: 16, left: 4, bottom: 16, right: 4)
+        view.textContainerInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
+        view.textContainer.lineFragmentPadding = 0
         view.isScrollEnabled = false
         view.inputAccessoryView = toolBarKeyboard
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -238,6 +254,38 @@ class AddFoodController: UIViewController {
     
     // MARK: - Selectors
     
+    @objc func morningButtonTapped() {
+        moringButton.isOn = true
+        lunchButton.isOn = false
+        dinnerButton.isOn = false
+        snackButton.isOn = false
+        print("아침")
+    }
+    
+    @objc func lunchButtonTapped() {
+        moringButton.isOn = false
+        lunchButton.isOn = true
+        dinnerButton.isOn = false
+        snackButton.isOn = false
+        print("점심")
+    }
+    
+    @objc func dinnerButtonTapped() {
+        moringButton.isOn = false
+        lunchButton.isOn = false
+        dinnerButton.isOn = true
+        snackButton.isOn = false
+        print("저녁")
+    }
+    
+    @objc func snackButtonTapped() {
+        moringButton.isOn = false
+        lunchButton.isOn = false
+        dinnerButton.isOn = false
+        snackButton.isOn = true
+        print("간식")
+    }
+    
     @objc func btnDoneBarTapped(sender: Any) {
         view.endEditing(true)
     }
@@ -267,6 +315,10 @@ class AddFoodController: UIViewController {
         
     }
     
+    @objc private func shareSwitchChanged(_ sender: UISwitch) {
+        isShare.toggle()
+    }
+    
     
     // MARK: - Helpers
     
@@ -278,11 +330,19 @@ class AddFoodController: UIViewController {
         scrollView.addSubview(stack)
         addButtonContainer.addSubview(addButton)
         
+        // 칼로리 입력 스택뷰 설정
+        calorieStack.addArrangedSubview(foodCalorieTextField)
+        calorieStack.addArrangedSubview(kcalLabel)
+        
+        shareStack.addArrangedSubview(shareLabel)
+        shareStack.addArrangedSubview(shareSwitch)
+        
         stack.addArrangedSubview(titleLabel)
         stack.addArrangedSubview(imageView)
         stack.addArrangedSubview(buttonStack)
         stack.addArrangedSubview(textFieldStack)
         stack.addArrangedSubview(textView)
+        stack.addArrangedSubview(shareStack)
         
         imageView.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
         imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
@@ -293,7 +353,9 @@ class AddFoodController: UIViewController {
         buttonStack.addArrangedSubview(snackButton)
         
         textFieldStack.addArrangedSubview(foodNameTextField)
-        textFieldStack.addArrangedSubview(foodCalorieTextField)
+        textFieldStack.addArrangedSubview(calorieStack)
+        
+        foodCalorieTextField.widthAnchor.constraint(equalToConstant: 80).isActive = true
         
         NSLayoutConstraint.activate([
             addButtonContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -317,17 +379,22 @@ class AddFoodController: UIViewController {
             stack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16),
             stack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
             
-            textView.heightAnchor.constraint(equalToConstant: 180)
+            shareStack.leadingAnchor.constraint(equalTo: stack.leadingAnchor),
+            shareStack.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
+            
+            textView.heightAnchor.constraint(equalToConstant: 180),
+            
+            buttonStack.heightAnchor.constraint(equalToConstant: 80),
+            
+            textFieldStack.heightAnchor.constraint(equalToConstant: 40)
         ])
         
         [moringButton, lunchButton, dinnerButton, snackButton].forEach { button in
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.heightAnchor.constraint(equalToConstant: 40).isActive = true
         }
         
         [foodNameTextField, foodCalorieTextField].forEach { textField in
             textField.translatesAutoresizingMaskIntoConstraints = false
-            textField.heightAnchor.constraint(equalToConstant: 40).isActive = true
         }
     }
     
@@ -345,9 +412,11 @@ extension AddFoodController: UITextViewDelegate {
     func setupPlaceholder() {
         textView.addSubview(textViewPlaceholder)
         
-        textViewPlaceholder.topAnchor.constraint(equalTo: textView.topAnchor, constant: 16).isActive = true
-        textViewPlaceholder.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: 8).isActive = true
-        textViewPlaceholder.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -8).isActive = true
+        NSLayoutConstraint.activate([
+            textViewPlaceholder.topAnchor.constraint(equalTo: textView.topAnchor, constant: 16),
+            textViewPlaceholder.leadingAnchor.constraint(equalTo: textView.leadingAnchor),
+            textViewPlaceholder.trailingAnchor.constraint(equalTo: textView.trailingAnchor),
+        ])
         
         textViewPlaceholder.isHidden = !textView.text.isEmpty
     }
@@ -356,7 +425,6 @@ extension AddFoodController: UITextViewDelegate {
         textViewPlaceholder.isHidden = !textView.text.isEmpty
         detailText = textView.text
         
-        // 텍스트뷰 스크롤 없이 height 길어지게끔..
         let size = CGSize(width: scrollView.frame.width, height: .infinity)
         let estimatedSize = textView.sizeThatFits(size)
         
@@ -371,14 +439,6 @@ extension AddFoodController: UITextViewDelegate {
                 }
             }
         }
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        textView.layer.borderColor = UIColor.black.cgColor
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        textView.layer.borderColor = UIColor.gray.cgColor
     }
     
     func hideKeyboardWhenTappedAround() {

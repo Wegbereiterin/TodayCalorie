@@ -17,6 +17,7 @@
 		6127A7D22CCCD021002F0122 /* FoodClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */; };
 		6127A7D42CCCD0A2002F0122 /* CGImageProperyOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */; };
 		6127A7D62CCD7459002F0122 /* ButtonColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D52CCD7459002F0122 /* ButtonColor.swift */; };
+		6127A7D82CCE3729002F0122 /* EatTimeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D72CCE3729002F0122 /* EatTimeButton.swift */; };
 		618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335B2CAEDD87009D071B /* AppDelegate.swift */; };
 		618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335D2CAEDD87009D071B /* SceneDelegate.swift */; };
 		618F33602CAEDD87009D071B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335F2CAEDD87009D071B /* ViewController.swift */; };
@@ -38,6 +39,7 @@
 		6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FoodClassifier.mlmodel; sourceTree = "<group>"; };
 		6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGImageProperyOrientation.swift; sourceTree = "<group>"; };
 		6127A7D52CCD7459002F0122 /* ButtonColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColor.swift; sourceTree = "<group>"; };
+		6127A7D72CCE3729002F0122 /* EatTimeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatTimeButton.swift; sourceTree = "<group>"; };
 		618F33582CAEDD87009D071B /* TodayCalorie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodayCalorie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		618F335B2CAEDD87009D071B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		618F335D2CAEDD87009D071B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				6127A7CD2CCBE2B2002F0122 /* FloatingMenuButton.swift */,
 				6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */,
 				6127A7D52CCD7459002F0122 /* ButtonColor.swift */,
+				6127A7D72CCE3729002F0122 /* EatTimeButton.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				6104BE1C2CC9475700F6CF69 /* SettingController.swift in Sources */,
 				6127A7CC2CCB58CE002F0122 /* RecordDetailController.swift in Sources */,
 				618F33602CAEDD87009D071B /* ViewController.swift in Sources */,
+				6127A7D82CCE3729002F0122 /* EatTimeButton.swift in Sources */,
 				618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */,
 				6127A7D22CCCD021002F0122 /* FoodClassifier.mlmodel in Sources */,
 				6127A7CA2CCB5869002F0122 /* AddFoodController.swift in Sources */,
