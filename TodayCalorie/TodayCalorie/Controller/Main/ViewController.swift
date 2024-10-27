@@ -103,18 +103,18 @@ class ViewController: UIViewController {
         return tableView
     }()
     
-    let menuItems = [
+    lazy var menuItems = [
         FloatingMenuButton.MenuItem(icon: UIImage(systemName: "microphone")!, title: "음성인식", action: {
             
         }),
         FloatingMenuButton.MenuItem(icon: UIImage(systemName: "pencil")!, title: "이미지없이 글작성", action: {
             
         }),
-        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "photo")!, title: "이미지선택", action: {
-            
+        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "photo")!, title: "이미지선택", action: { [weak self] in
+            self?.presentPhotoPicker(sourceType: UIImagePickerController.SourceType.photoLibrary)
         }),
-        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "camera")!, title: "사진촬영", action: {
-            
+        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "camera")!, title: "사진촬영", action: { [weak self] in
+            self?.presentPhotoPicker(sourceType: UIImagePickerController.SourceType.camera)
         })
     ]
     
@@ -189,6 +189,13 @@ class ViewController: UIViewController {
             ])
             
     }
+    
+    func presentPhotoPicker(sourceType: UIImagePickerController.SourceType) {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.sourceType = sourceType
+        present(picker, animated: true, completion: nil)
+    }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
@@ -205,6 +212,22 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.configure()
         
         return cell
+    }
+}
+
+extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+        
+        if let image = info[.originalImage] as? UIImage {
+            let foodClassificationVC = ClassificationViewController()
+            foodClassificationVC.selectedImage = image
+//            navigationController?.pushViewController(foodClassificationVC, animated: true)
+            
+            let navigationController = UINavigationController(rootViewController: foodClassificationVC)
+            navigationController.modalPresentationStyle = .fullScreen
+            present(navigationController, animated: true)
+        }
     }
 }
 

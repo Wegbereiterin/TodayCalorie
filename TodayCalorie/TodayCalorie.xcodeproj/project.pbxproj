@@ -13,6 +13,10 @@
 		6127A7CA2CCB5869002F0122 /* AddFoodController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7C92CCB5869002F0122 /* AddFoodController.swift */; };
 		6127A7CC2CCB58CE002F0122 /* RecordDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */; };
 		6127A7CE2CCBE2B2002F0122 /* FloatingMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CD2CCBE2B2002F0122 /* FloatingMenuButton.swift */; };
+		6127A7D02CCCCCC6002F0122 /* ClassificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */; };
+		6127A7D22CCCD021002F0122 /* FoodClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */; };
+		6127A7D42CCCD0A2002F0122 /* CGImageProperyOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */; };
+		6127A7D62CCD7459002F0122 /* ButtonColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D52CCD7459002F0122 /* ButtonColor.swift */; };
 		618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335B2CAEDD87009D071B /* AppDelegate.swift */; };
 		618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335D2CAEDD87009D071B /* SceneDelegate.swift */; };
 		618F33602CAEDD87009D071B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335F2CAEDD87009D071B /* ViewController.swift */; };
@@ -30,6 +34,10 @@
 		6127A7C92CCB5869002F0122 /* AddFoodController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodController.swift; sourceTree = "<group>"; };
 		6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDetailController.swift; sourceTree = "<group>"; };
 		6127A7CD2CCBE2B2002F0122 /* FloatingMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingMenuButton.swift; sourceTree = "<group>"; };
+		6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationViewController.swift; sourceTree = "<group>"; };
+		6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FoodClassifier.mlmodel; sourceTree = "<group>"; };
+		6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGImageProperyOrientation.swift; sourceTree = "<group>"; };
+		6127A7D52CCD7459002F0122 /* ButtonColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColor.swift; sourceTree = "<group>"; };
 		618F33582CAEDD87009D071B /* TodayCalorie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodayCalorie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		618F335B2CAEDD87009D071B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		618F335D2CAEDD87009D071B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -64,6 +72,8 @@
 			isa = PBXGroup;
 			children = (
 				6127A7CD2CCBE2B2002F0122 /* FloatingMenuButton.swift */,
+				6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */,
+				6127A7D52CCD7459002F0122 /* ButtonColor.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -97,6 +107,7 @@
 				61A099A12CCA883A00339B66 /* CalorieCell.swift */,
 				6127A7C92CCB5869002F0122 /* AddFoodController.swift */,
 				6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */,
+				6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -136,6 +147,7 @@
 		618F335A2CAEDD87009D071B /* TodayCalorie */ = {
 			isa = PBXGroup;
 			children = (
+				6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */,
 				618F33692CAEDD88009D071B /* Info.plist */,
 				6104BE152CC75F7500F6CF69 /* Root */,
 				6104BE142CC75F6000F6CF69 /* Controller */,
@@ -230,12 +242,16 @@
 				6127A7CC2CCB58CE002F0122 /* RecordDetailController.swift in Sources */,
 				618F33602CAEDD87009D071B /* ViewController.swift in Sources */,
 				618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */,
+				6127A7D22CCCD021002F0122 /* FoodClassifier.mlmodel in Sources */,
 				6127A7CA2CCB5869002F0122 /* AddFoodController.swift in Sources */,
 				6104BE172CC75FFB00F6CF69 /* MainTabController.swift in Sources */,
 				61A099A22CCA883A00339B66 /* CalorieCell.swift in Sources */,
 				61A099A72CCA8DF700339B66 /* Food.swift in Sources */,
+				6127A7D02CCCCCC6002F0122 /* ClassificationViewController.swift in Sources */,
 				618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */,
 				6104BE1E2CC9476500F6CF69 /* PostController.swift in Sources */,
+				6127A7D42CCCD0A2002F0122 /* CGImageProperyOrientation.swift in Sources */,
+				6127A7D62CCD7459002F0122 /* ButtonColor.swift in Sources */,
 				6127A7CE2CCBE2B2002F0122 /* FloatingMenuButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -391,6 +407,7 @@
 				DEVELOPMENT_TEAM = 9M4VX9F952;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TodayCalorie/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 사용을 허용해주세요.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -419,6 +436,7 @@
 				DEVELOPMENT_TEAM = 9M4VX9F952;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TodayCalorie/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라 사용을 허용해주세요.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
