@@ -85,13 +85,16 @@ fastlane/test_output
 
 iOSInjectionProject/
 
+#Firebase
+**/GoogleService-Info.plist
+GoogleService-Info.plist
+
+
 *.mlmodel
 **/Info.plist
 .DS_Store
 ._.DS_Store
 **/._.DS_Store
-**/GoogleService-Info.plist
-*.plist
 
 # End of https://www.toptal.com/developers/gitignore/api/swift
 
