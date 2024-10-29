@@ -104,11 +104,11 @@ class ViewController: UIViewController {
     }()
     
     lazy var menuItems = [
-        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "microphone")!, title: "음성인식", action: {
-            
-        }),
         FloatingMenuButton.MenuItem(icon: UIImage(systemName: "pencil")!, title: "이미지없이 글작성", action: {
-            
+            let addFoodController = AddFoodController()
+            let navigationController = UINavigationController(rootViewController: addFoodController)
+            navigationController.modalPresentationStyle = .fullScreen
+            self.present(navigationController, animated: true)
         }),
         FloatingMenuButton.MenuItem(icon: UIImage(systemName: "photo")!, title: "이미지선택", action: { [weak self] in
             self?.presentPhotoPicker(sourceType: UIImagePickerController.SourceType.photoLibrary)
@@ -213,6 +213,18 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//            let post = posts[indexPath.row]
+            
+//            let courseDetailVC = CourseDetailVC(isBack: true)
+//            courseDetailVC.hidesBottomBarWhenPushed = true
+            
+//            courseDetailVC.postUid = post.uid
+            
+        self.navigationController?.pushViewController(RecordDetailController(), animated: true)
+            tableView.deselectRow(at: indexPath, animated: false)
+        }
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

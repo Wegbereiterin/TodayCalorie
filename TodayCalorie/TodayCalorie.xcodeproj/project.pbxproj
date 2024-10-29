@@ -34,6 +34,11 @@
 		61D705BB2CCE8F7700640F47 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705BA2CCE8F7700640F47 /* FirebaseFirestore */; };
 		61D705BD2CCE8F7700640F47 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705BC2CCE8F7700640F47 /* FirebaseStorage */; };
 		61E53E2F2CCEA7E600E8DBB1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 61E53E2E2CCEA7E600E8DBB1 /* GoogleService-Info.plist */; };
+		61E53E312CCF118600E8DBB1 /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E53E302CCF118600E8DBB1 /* PostCell.swift */; };
+		61E53E392CCFFCD300E8DBB1 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E53E382CCFFCD300E8DBB1 /* User.swift */; };
+		61E53E3B2CCFFD7A00E8DBB1 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E53E3A2CCFFD7A00E8DBB1 /* UserService.swift */; };
+		61E53E3F2CD0042000E8DBB1 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E53E3E2CD0042000E8DBB1 /* AuthService.swift */; };
+		61E53E412CD007AB00E8DBB1 /* KeyboardExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E53E402CD007AB00E8DBB1 /* KeyboardExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +66,11 @@
 		61D705AD2CCE85AF00640F47 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		61D705AF2CCE863C00640F47 /* RegistrationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationController.swift; sourceTree = "<group>"; };
 		61E53E2E2CCEA7E600E8DBB1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		61E53E302CCF118600E8DBB1 /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
+		61E53E382CCFFCD300E8DBB1 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		61E53E3A2CCFFD7A00E8DBB1 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		61E53E3E2CD0042000E8DBB1 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		61E53E402CD007AB00E8DBB1 /* KeyboardExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +92,8 @@
 		6104BE112CC75F0D00F6CF69 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				61E53E3A2CCFFD7A00E8DBB1 /* UserService.swift */,
+				61E53E3E2CD0042000E8DBB1 /* AuthService.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -93,6 +105,7 @@
 				6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */,
 				6127A7D52CCD7459002F0122 /* ButtonColor.swift */,
 				6127A7D72CCE3729002F0122 /* EatTimeButton.swift */,
+				61E53E402CD007AB00E8DBB1 /* KeyboardExtension.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -136,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				6104BE1D2CC9476500F6CF69 /* PostController.swift */,
+				61E53E302CCF118600E8DBB1 /* PostCell.swift */,
 			);
 			path = Post;
 			sourceTree = "<group>";
@@ -184,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				61A099A62CCA8DF700339B66 /* Food.swift */,
+				61E53E382CCFFCD300E8DBB1 /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -276,14 +291,19 @@
 				6127A7CC2CCB58CE002F0122 /* RecordDetailController.swift in Sources */,
 				618F33602CAEDD87009D071B /* ViewController.swift in Sources */,
 				6127A7D82CCE3729002F0122 /* EatTimeButton.swift in Sources */,
+				61E53E412CD007AB00E8DBB1 /* KeyboardExtension.swift in Sources */,
 				618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */,
+				61E53E3F2CD0042000E8DBB1 /* AuthService.swift in Sources */,
 				6127A7D22CCCD021002F0122 /* FoodClassifier.mlmodel in Sources */,
 				6127A7CA2CCB5869002F0122 /* AddFoodController.swift in Sources */,
 				6104BE172CC75FFB00F6CF69 /* MainTabController.swift in Sources */,
+				61E53E392CCFFCD300E8DBB1 /* User.swift in Sources */,
 				61A099A22CCA883A00339B66 /* CalorieCell.swift in Sources */,
 				61A099A72CCA8DF700339B66 /* Food.swift in Sources */,
 				61D705B02CCE863C00640F47 /* RegistrationController.swift in Sources */,
 				6127A7D02CCCCCC6002F0122 /* ClassificationViewController.swift in Sources */,
+				61E53E312CCF118600E8DBB1 /* PostCell.swift in Sources */,
+				61E53E3B2CCFFD7A00E8DBB1 /* UserService.swift in Sources */,
 				61D705AE2CCE85AF00640F47 /* LoginController.swift in Sources */,
 				618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */,
 				6104BE1E2CC9476500F6CF69 /* PostController.swift in Sources */,

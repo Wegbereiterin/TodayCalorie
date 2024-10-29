@@ -246,7 +246,7 @@ class AddFoodController: UIViewController {
         
         configureUI()
         setupPlaceholder()
-        hideKeyboardWhenTappedAround()
+        setKeyboard()
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -290,10 +290,6 @@ class AddFoodController: UIViewController {
         view.endEditing(true)
     }
     
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
     @objc func keyboardWillShow(notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             let contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardFrame.height, right: 0)
@@ -323,78 +319,152 @@ class AddFoodController: UIViewController {
     // MARK: - Helpers
     
     func configureUI() {
-        view.backgroundColor = .white
         
-        view.addSubview(scrollView)
-        view.addSubview(addButtonContainer)
-        scrollView.addSubview(stack)
-        addButtonContainer.addSubview(addButton)
-        
-        // 칼로리 입력 스택뷰 설정
-        calorieStack.addArrangedSubview(foodCalorieTextField)
-        calorieStack.addArrangedSubview(kcalLabel)
-        
-        shareStack.addArrangedSubview(shareLabel)
-        shareStack.addArrangedSubview(shareSwitch)
-        
-        stack.addArrangedSubview(titleLabel)
-        stack.addArrangedSubview(imageView)
-        stack.addArrangedSubview(buttonStack)
-        stack.addArrangedSubview(textFieldStack)
-        stack.addArrangedSubview(textView)
-        stack.addArrangedSubview(shareStack)
-        
-        imageView.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
-        
-        buttonStack.addArrangedSubview(moringButton)
-        buttonStack.addArrangedSubview(lunchButton)
-        buttonStack.addArrangedSubview(dinnerButton)
-        buttonStack.addArrangedSubview(snackButton)
-        
-        textFieldStack.addArrangedSubview(foodNameTextField)
-        textFieldStack.addArrangedSubview(calorieStack)
-        
-        foodCalorieTextField.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        
-        NSLayoutConstraint.activate([
-            addButtonContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
-            addButtonContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
-            addButtonContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            addButtonContainer.heightAnchor.constraint(equalToConstant: 70),
+        if imageView.image == nil {
+            view.backgroundColor = .white
             
-            addButton.topAnchor.constraint(equalTo: addButtonContainer.topAnchor, constant: 5),
-            addButton.leftAnchor.constraint(equalTo: addButtonContainer.leftAnchor, constant: 16),
-            addButton.rightAnchor.constraint(equalTo: addButtonContainer.rightAnchor, constant: -16),
-            addButton.bottomAnchor.constraint(equalTo: addButtonContainer.bottomAnchor, constant: -5),
+            view.addSubview(scrollView)
+            view.addSubview(addButtonContainer)
+            scrollView.addSubview(stack)
+            addButtonContainer.addSubview(addButton)
             
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            scrollView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: addButtonContainer.topAnchor),
+            // 칼로리 입력 스택뷰 설정
+            calorieStack.addArrangedSubview(foodCalorieTextField)
+            calorieStack.addArrangedSubview(kcalLabel)
             
-            stack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
-            stack.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 16),
-            stack.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -16),
-            stack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16),
-            stack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
+            shareStack.addArrangedSubview(shareLabel)
+            shareStack.addArrangedSubview(shareSwitch)
             
-            shareStack.leadingAnchor.constraint(equalTo: stack.leadingAnchor),
-            shareStack.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
+            stack.addArrangedSubview(titleLabel)
+            stack.addArrangedSubview(buttonStack)
+            stack.addArrangedSubview(textFieldStack)
+            stack.addArrangedSubview(textView)
+            stack.addArrangedSubview(shareStack)
             
-            textView.heightAnchor.constraint(equalToConstant: 180),
+            buttonStack.addArrangedSubview(moringButton)
+            buttonStack.addArrangedSubview(lunchButton)
+            buttonStack.addArrangedSubview(dinnerButton)
+            buttonStack.addArrangedSubview(snackButton)
             
-            buttonStack.heightAnchor.constraint(equalToConstant: 80),
+            textFieldStack.addArrangedSubview(foodNameTextField)
+            textFieldStack.addArrangedSubview(calorieStack)
             
-            textFieldStack.heightAnchor.constraint(equalToConstant: 40)
-        ])
-        
-        [moringButton, lunchButton, dinnerButton, snackButton].forEach { button in
-            button.translatesAutoresizingMaskIntoConstraints = false
-        }
-        
-        [foodNameTextField, foodCalorieTextField].forEach { textField in
-            textField.translatesAutoresizingMaskIntoConstraints = false
+            foodCalorieTextField.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            
+            NSLayoutConstraint.activate([
+                addButtonContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
+                addButtonContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
+                addButtonContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                addButtonContainer.heightAnchor.constraint(equalToConstant: 70),
+                
+                addButton.topAnchor.constraint(equalTo: addButtonContainer.topAnchor, constant: 5),
+                addButton.leftAnchor.constraint(equalTo: addButtonContainer.leftAnchor, constant: 16),
+                addButton.rightAnchor.constraint(equalTo: addButtonContainer.rightAnchor, constant: -16),
+                addButton.bottomAnchor.constraint(equalTo: addButtonContainer.bottomAnchor, constant: -5),
+                
+                scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                scrollView.leftAnchor.constraint(equalTo: view.leftAnchor),
+                scrollView.rightAnchor.constraint(equalTo: view.rightAnchor),
+                scrollView.bottomAnchor.constraint(equalTo: addButtonContainer.topAnchor),
+                
+                stack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
+                stack.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 16),
+                stack.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -16),
+                stack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16),
+                stack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
+                
+                shareStack.leadingAnchor.constraint(equalTo: stack.leadingAnchor),
+                shareStack.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
+                
+                textView.heightAnchor.constraint(equalToConstant: 180),
+                
+                buttonStack.heightAnchor.constraint(equalToConstant: 80),
+                
+                textFieldStack.heightAnchor.constraint(equalToConstant: 40)
+            ])
+            
+            [moringButton, lunchButton, dinnerButton, snackButton].forEach { button in
+                button.translatesAutoresizingMaskIntoConstraints = false
+            }
+            
+            [foodNameTextField, foodCalorieTextField].forEach { textField in
+                textField.translatesAutoresizingMaskIntoConstraints = false
+            }
+        } else {
+            
+            view.backgroundColor = .white
+            
+            view.addSubview(scrollView)
+            view.addSubview(addButtonContainer)
+            scrollView.addSubview(stack)
+            addButtonContainer.addSubview(addButton)
+            
+            // 칼로리 입력 스택뷰 설정
+            calorieStack.addArrangedSubview(foodCalorieTextField)
+            calorieStack.addArrangedSubview(kcalLabel)
+            
+            shareStack.addArrangedSubview(shareLabel)
+            shareStack.addArrangedSubview(shareSwitch)
+            
+            stack.addArrangedSubview(titleLabel)
+            stack.addArrangedSubview(imageView)
+            stack.addArrangedSubview(buttonStack)
+            stack.addArrangedSubview(textFieldStack)
+            stack.addArrangedSubview(textView)
+            stack.addArrangedSubview(shareStack)
+            
+            imageView.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
+            
+            buttonStack.addArrangedSubview(moringButton)
+            buttonStack.addArrangedSubview(lunchButton)
+            buttonStack.addArrangedSubview(dinnerButton)
+            buttonStack.addArrangedSubview(snackButton)
+            
+            textFieldStack.addArrangedSubview(foodNameTextField)
+            textFieldStack.addArrangedSubview(calorieStack)
+            
+            foodCalorieTextField.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            
+            NSLayoutConstraint.activate([
+                addButtonContainer.leftAnchor.constraint(equalTo: view.leftAnchor),
+                addButtonContainer.rightAnchor.constraint(equalTo: view.rightAnchor),
+                addButtonContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                addButtonContainer.heightAnchor.constraint(equalToConstant: 70),
+                
+                addButton.topAnchor.constraint(equalTo: addButtonContainer.topAnchor, constant: 5),
+                addButton.leftAnchor.constraint(equalTo: addButtonContainer.leftAnchor, constant: 16),
+                addButton.rightAnchor.constraint(equalTo: addButtonContainer.rightAnchor, constant: -16),
+                addButton.bottomAnchor.constraint(equalTo: addButtonContainer.bottomAnchor, constant: -5),
+                
+                scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                scrollView.leftAnchor.constraint(equalTo: view.leftAnchor),
+                scrollView.rightAnchor.constraint(equalTo: view.rightAnchor),
+                scrollView.bottomAnchor.constraint(equalTo: addButtonContainer.topAnchor),
+                
+                stack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
+                stack.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 16),
+                stack.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -16),
+                stack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16),
+                stack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
+                
+                shareStack.leadingAnchor.constraint(equalTo: stack.leadingAnchor),
+                shareStack.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
+                
+                textView.heightAnchor.constraint(equalToConstant: 180),
+                
+                buttonStack.heightAnchor.constraint(equalToConstant: 80),
+                
+                textFieldStack.heightAnchor.constraint(equalToConstant: 40)
+            ])
+            
+            [moringButton, lunchButton, dinnerButton, snackButton].forEach { button in
+                button.translatesAutoresizingMaskIntoConstraints = false
+            }
+            
+            [foodNameTextField, foodCalorieTextField].forEach { textField in
+                textField.translatesAutoresizingMaskIntoConstraints = false
+            }
         }
     }
     
@@ -402,6 +472,13 @@ class AddFoodController: UIViewController {
         self.imageView.image = image
         self.foodNameTextField.text = foodName
         self.foodCalorieTextField.text = String(foodCalories)
+    }
+    
+    func setKeyboard() {
+        setupKeyboardHandling(for: scrollView)
+        addKeyboardToolbar(to: textView)
+        addKeyboardToolbar(to: foodNameTextField)
+        addKeyboardToolbar(to: foodCalorieTextField)
     }
     
     
@@ -439,11 +516,5 @@ extension AddFoodController: UITextViewDelegate {
                 }
             }
         }
-    }
-    
-    func hideKeyboardWhenTappedAround() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
     }
 }

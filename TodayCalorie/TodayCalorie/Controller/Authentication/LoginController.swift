@@ -36,6 +36,7 @@ class LoginController: UIViewController {
         textField.borderStyle = .roundedRect
         textField.font = .systemFont(ofSize: 16, weight: .regular)
         textField.textColor = .placeholderText
+        textField.isSecureTextEntry = true
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -80,12 +81,38 @@ class LoginController: UIViewController {
         
         configureUI()
         setNav()
+        setKeyboard()
     }
     
     // MARK: - Selectors
     
     @objc func loginTapped() {
-        print("Login Tapped")
+        guard let email = emailTextField.text, !email.isEmpty else {
+            // 테두리 색 바꾸기
+            
+            return
+        }
+        
+        guard let password = passwordTextField.text, !password.isEmpty else {
+            // 테두리 색 바꾸기
+            
+            return
+        }
+        
+        Task {
+            do {
+                let user = try await AuthService.shared.signIn(withEmail: email, password: password)
+                
+                await MainActor.run {
+                    let viewController = ViewController()
+                    navigationController?.pushViewController(viewController, animated: true)
+                }
+            } catch {
+                await MainActor.run {
+                    print("DEBUG: 로그인실패 \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
     @objc func registerTapped() {
@@ -130,6 +157,11 @@ class LoginController: UIViewController {
     func setNav() {
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.isHidden = true
+    }
+    
+    func setKeyboard() {
+        addKeyboardToolbar(to: emailTextField)
+        addKeyboardToolbar(to: passwordTextField)
     }
     
 }

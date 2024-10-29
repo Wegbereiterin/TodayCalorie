@@ -38,6 +38,7 @@ class RegistrationController: UIViewController {
         textField.borderStyle = .roundedRect
         textField.font = .systemFont(ofSize: 16, weight: .regular)
         textField.textColor = .placeholderText
+        textField.isSecureTextEntry = true
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -79,22 +80,42 @@ class RegistrationController: UIViewController {
         
         configureUI()
         setNav()
+        setKeyboard()
     }
     
     // MARK: - Selectors
     
     @objc func registrationTapped() {
-        guard let email = emailTextField.text else { return }
-        guard let password = passwordTextField.text else { return }
-        guard let name = nameTextField.text else { return }
-        
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if let error = error {
-                print("DEBUG: 가입오류 \(error.localizedDescription)")
-                return
-            }
+        guard let email = emailTextField.text, !email.isEmpty else {
+            // 테두리 색 바꾸기
             
-            print("DEBUG: 로그인 성공 이메일 = \(email)")
+            return
+        }
+        
+        guard let password = passwordTextField.text, !password.isEmpty else {
+            // 테두리 색 바꾸기
+            
+            return
+        }
+        
+        guard let name = nameTextField.text, !name.isEmpty else {
+            // 테두리 색 바꾸기
+            
+            return
+        }
+        
+        Task {
+            do {
+                let user = try await AuthService.shared.createUser(withEmail: email, password: password, name: name)
+                
+                await MainActor.run {
+                    dismiss(animated: true)
+                }
+            } catch {
+                await MainActor.run {
+                    print("DEBUG: 회원가입 실패 \(error.localizedDescription)")
+                }
+            }
         }
     }
     
@@ -137,6 +158,12 @@ class RegistrationController: UIViewController {
     func setNav() {
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.isHidden = true
+    }
+    
+    func setKeyboard() {
+        addKeyboardToolbar(to: emailTextField)
+        addKeyboardToolbar(to: passwordTextField)
+        addKeyboardToolbar(to: nameTextField)
     }
     
 }
