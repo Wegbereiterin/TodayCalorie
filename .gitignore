@@ -89,7 +89,7 @@ iOSInjectionProject/
 **/GoogleService-Info.plist
 GoogleService-Info.plist
 
-
+*.mlpackage
 *.mlmodel
 **/Info.plist
 .DS_Store

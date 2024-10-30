@@ -15,7 +15,7 @@ class PostCell: UITableViewCell {
     
     private let foodImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         
         imageView.widthAnchor.constraint(equalToConstant: 250).isActive = true
@@ -194,11 +194,11 @@ class PostCell: UITableViewCell {
     
     func configure() {
         userNameLabel.text = "사용자 이름"
-        foodNameLabel.text = "음식 이름"
+        foodNameLabel.text = "Apple"
         likesLabel.text = "좋아요 16"
-        caloriesLabel.text = "128 Kcal"
-        detailLabel.text = "오늘 먹은 음식이 어쩌고 저쩌고.."
-        foodImageView.image = UIImage(systemName: "photo")
+        caloriesLabel.text = "95 Kcal"
+        detailLabel.text = "오늘 오전에 먹은 사과 1개"
+        foodImageView.image = UIImage(named: "Apple_Sample")
     }
     
 }

@@ -21,7 +21,7 @@ class CalorieCell: UITableViewCell {
     
     private let foodImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         
         imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
@@ -65,7 +65,7 @@ class CalorieCell: UITableViewCell {
     
     private let timeImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "clock")
+//        imageView.image = UIImage(systemName: "clock")
         imageView.tintColor = .label
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -126,10 +126,12 @@ class CalorieCell: UITableViewCell {
     }
     
     public func configure() {
-        self.foodNameLabel.text = "Food Name"
-        self.calorieLabel.text = "0 Kcal"
-        self.detailLabel.text = "Detail"
-        self.imageView?.image = UIImage(named: "placeholder")
+        self.foodNameLabel.text = "Apple"
+        self.calorieLabel.text = "95 Kcal"
+        self.detailLabel.text = "오늘 오전에 먹은 사과 1개"
+//        self.imageView?.image = UIImage(named: "placeholder")
+        self.foodImageView.image = UIImage(named: "Apple_Sample")
+        self.timeImage.image = UIImage(named: "Morning_T")
     }
     
 //    public func configure(with model: Food) {

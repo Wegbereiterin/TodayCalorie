@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "사용자 이름"
+        label.text = "박선구님"
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         
         label.textColor = .black
@@ -50,7 +50,7 @@ class ViewController: UIViewController {
     
     private lazy var calorieLabel: UILabel = {
         let label = UILabel()
-        label.text = "754 Kcal"
+        label.text = "95 Kcal"
         label.font = .systemFont(ofSize: 24, weight: .bold)
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -63,7 +63,7 @@ class ViewController: UIViewController {
     // Progress Bar
     let progressBar: UIProgressView = {
         let progressBar = UIProgressView(frame: .zero)
-        progressBar.progress = 0.7
+        progressBar.progress = 0.1
         progressBar.progressViewStyle = .bar
         progressBar.progressTintColor = .main
         progressBar.backgroundColor = .white.withAlphaComponent(0.04)
@@ -200,7 +200,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
