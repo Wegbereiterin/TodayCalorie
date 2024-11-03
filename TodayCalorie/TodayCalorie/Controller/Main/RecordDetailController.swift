@@ -38,7 +38,7 @@ class RecordDetailController: UIViewController {
    
    private let foodImageView: UIImageView = {
        let imageView = UIImageView()
-       imageView.contentMode = .scaleAspectFit
+       imageView.contentMode = .scaleAspectFill
        imageView.clipsToBounds = true
        imageView.backgroundColor = .white
        imageView.layer.cornerRadius = 20
@@ -99,6 +99,7 @@ class RecordDetailController: UIViewController {
        label.font = .systemFont(ofSize: 14, weight: .semibold)
        label.textColor = .black
        label.numberOfLines = 0
+       label.textAlignment = .right
        
        label.text = "아침에 간단하게 먹어봤다\n시커먹은 치즈버거 세트"
        
@@ -156,6 +157,23 @@ class RecordDetailController: UIViewController {
        stackView.translatesAutoresizingMaskIntoConstraints = false
        return stackView
    }()
+    
+    private let foodListTitleLabel: UILabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 14)
+            label.textColor = .black
+            label.text = "음식 목록"
+            label.translatesAutoresizingMaskIntoConstraints = false
+            return label
+        }()
+        
+        private let foodListStackView: UIStackView = {
+            let stackView = UIStackView()
+            stackView.axis = .vertical
+            stackView.spacing = 8
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+            return stackView
+        }()
    
    // MARK: - Lifecycle
    
@@ -185,6 +203,8 @@ class RecordDetailController: UIViewController {
        stackView.addArrangedSubview(foodImageView)
        stackView.addArrangedSubview(calorieStackView)
        stackView.addArrangedSubview(dateTimeStackView)
+       stackView.addArrangedSubview(foodListTitleLabel)
+       stackView.addArrangedSubview(foodListStackView)
        stackView.addArrangedSubview(detailTitleLabel)
        stackView.addArrangedSubview(detailLabel)
        
@@ -206,4 +226,83 @@ class RecordDetailController: UIViewController {
            foodImageView.heightAnchor.constraint(equalTo: foodImageView.widthAnchor)
        ])
    }
+    
+    private func createFoodItemView(foodItem: FoodItem) -> UIView {
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        
+        let nameLabel = UILabel()
+        nameLabel.text = "\(foodItem.name) (\(foodItem.amount))"
+        nameLabel.font = .systemFont(ofSize: 14, weight: .medium)
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        let calorieLabel = UILabel()
+        calorieLabel.text = "\(foodItem.calories) Kcal"
+        calorieLabel.font = .systemFont(ofSize: 14, weight: .medium)
+        calorieLabel.textAlignment = .right
+        calorieLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        container.addSubview(nameLabel)
+        container.addSubview(calorieLabel)
+        
+        NSLayoutConstraint.activate([
+            nameLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            nameLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            
+            calorieLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            calorieLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            
+            container.heightAnchor.constraint(equalToConstant: 30)
+        ])
+        
+        return container
+    }
+    
+    func configure(with post: FoodPost) {
+            titleLabel.text = post.title
+            calorieLabel.text = "\(post.totalCalories) Kcal"
+            detailLabel.text = post.description
+            
+            // 날짜 포맷
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
+            dateLabel.text = dateFormatter.string(from: post.createdAt.dateValue())
+            
+            // 식사 시간에 따른 이미지 설정
+            switch post.mealTime {
+            case "morning":
+                timeImageView.image = UIImage(named: "Morning_T")
+            case "lunch":
+                timeImageView.image = UIImage(named: "Lunch_T")
+            case "evening":
+                timeImageView.image = UIImage(named: "Evening_T")
+            case "snack":
+                timeImageView.image = UIImage(named: "Snack_T")
+            default:
+                break
+            }
+            
+            // 음식 목록 표시
+        for foodItem in post.foodItems {
+            let foodItemView = createFoodItemView(foodItem: foodItem)
+            foodListStackView.addArrangedSubview(foodItemView)
+        }
+            
+            // 이미지 설정 (URLSession 사용)
+            if let imageUrlString = post.foodImages.first,
+               let imageUrl = URL(string: imageUrlString) {
+                URLSession.shared.dataTask(with: imageUrl) { [weak self] data, _, error in
+                    if let error = error {
+                        print("DEBUG: 이미지 로드 실패: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            self?.foodImageView.image = image
+                        }
+                    }
+                }.resume()
+            }
+        }
 }

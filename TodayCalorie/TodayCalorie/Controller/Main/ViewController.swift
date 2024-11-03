@@ -6,20 +6,40 @@
 //
 
 import UIKit
+import FirebaseFirestore
+import FirebaseAuth
 
 class ViewController: UIViewController {
     
     // MARK: - Properties
     
+    private var foodPosts: [FoodPost] = [] {
+        didSet {
+            tableView.reloadData()
+            updateTodayCalories()
+        }
+    }
+    
+    private var userName: String = "사용자" {
+        didSet {
+            nameLabel.text = userName
+        }
+    }
+    
+    private var todayCalories: Int = 0 {
+        didSet {
+            calorieLabel.text = "\(todayCalories) Kcal"
+        }
+    }
+    
+    private let db = Firestore.firestore()
+    
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "사용자님"
+        label.text = userName
         label.font = .systemFont(ofSize: 14, weight: .semibold)
-        
         label.textColor = .black
-        
         label.translatesAutoresizingMaskIntoConstraints = false
-        
         return label
     }()
     
@@ -27,67 +47,49 @@ class ViewController: UIViewController {
         let label = UILabel()
         label.text = "오늘 섭취한 총 칼로리"
         label.font = .systemFont(ofSize: 18, weight: .semibold)
-        
         label.textColor = .fontGray
-        
         label.translatesAutoresizingMaskIntoConstraints = false
-        
         return label
     }()
     
     private let calendarButton: UIButton = {
         let button = UIButton()
-        
         let calendarImage = UIImage(systemName: "calendar")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 24))
-        
         button.setImage(calendarImage, for: .normal)
         button.tintColor = .gray
-        
         button.translatesAutoresizingMaskIntoConstraints = false
-        
         return button
     }()
     
     private lazy var calorieLabel: UILabel = {
         let label = UILabel()
-        label.text = "95 Kcal"
+        label.text = "\(todayCalories) Kcal"
         label.font = .systemFont(ofSize: 24, weight: .bold)
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
         label.textColor = .black
-        
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    // Progress Bar
-    let progressBar: UIProgressView = {
+    private let progressBar: UIProgressView = {
         let progressBar = UIProgressView(frame: .zero)
         progressBar.progress = 0.1
         progressBar.progressViewStyle = .bar
         progressBar.progressTintColor = .main
         progressBar.backgroundColor = .white.withAlphaComponent(0.04)
-        
         progressBar.layer.cornerRadius = 10
         progressBar.layer.masksToBounds = true
-        
         progressBar.layer.borderWidth = 0.1
         progressBar.layer.borderColor = UIColor.gray.cgColor
-        
-        // 그림자 추가 예정
         progressBar.layer.shadowColor = UIColor.black.cgColor
         progressBar.layer.shadowOpacity = 0.1
-        
         progressBar.transform = progressBar.transform.scaledBy(x: 1.04, y: 5.0)
-        
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         return progressBar
     }()
     
-    let divider: UIView = {
+    private let divider: UIView = {
         let divider = UIView()
         divider.backgroundColor = .black
-        
         divider.translatesAutoresizingMaskIntoConstraints = false
         return divider
     }()
@@ -98,18 +100,17 @@ class ViewController: UIViewController {
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         tableView.allowsSelection = true
-        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
     lazy var menuItems = [
-        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "pencil")!, title: "이미지없이 글작성", action: {
-            let addFoodController = AddFoodController()
-            let navigationController = UINavigationController(rootViewController: addFoodController)
-            navigationController.modalPresentationStyle = .fullScreen
-            self.present(navigationController, animated: true)
-        }),
+//        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "pencil")!, title: "이미지없이 글작성", action: {
+//            let addFoodController = AddFoodController()
+//            let navigationController = UINavigationController(rootViewController: addFoodController)
+//            navigationController.modalPresentationStyle = .fullScreen
+//            self.present(navigationController, animated: true)
+//        }),
         FloatingMenuButton.MenuItem(icon: UIImage(systemName: "photo")!, title: "이미지선택", action: { [weak self] in
             self?.presentPhotoPicker(sourceType: UIImagePickerController.SourceType.photoLibrary)
         }),
@@ -128,19 +129,118 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationController?.navigationBar.isHidden = true
-        
         configureUI()
         tableView.delegate = self
         tableView.dataSource = self
+        
+        loadUserInfo()
+        loadTodayFoodPosts()
     }
     
-    // MARK: - Selectors
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadTodayFoodPosts()
+    }
+    
+    // MARK: - API
+    
+    private func loadUserInfo() {
+        guard let userUID = Auth.auth().currentUser?.uid else { return }
+        
+        db.collection("users").document(userUID).getDocument { [weak self] snapshot, error in
+            if let error = error {
+                print("DEBUG: 사용자 정보 로드 실패: \(error.localizedDescription)")
+                return
+            }
+            
+            if let data = snapshot?.data(),
+               let name = data["name"] as? String {
+                self?.userName = name
+            }
+        }
+    }
+    
+    private func loadTodayFoodPosts() {
+       guard let userUID = Auth.auth().currentUser?.uid else { return }
+       
+       // 오늘 날짜의 시작과 끝 계산
+       let calendar = Calendar.current
+       let now = Date()
+       let startOfDay = calendar.startOfDay(for: now)
+       let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+       
+       db.collection("food_posts")
+           .whereField("userUID", isEqualTo: userUID)
+    //            .whereField("createdAt", isGreaterThanOrEqualTo: Timestamp(date: startOfDay))
+    //            .whereField("createdAt", isLessThan: Timestamp(date: endOfDay))
+    //            .order(by: "createdAt", descending: true)
+           .getDocuments { [weak self] snapshot, error in
+               if let error = error {
+                   print("DEBUG: 데이터 로드 실패: \(error.localizedDescription)")
+                   return
+               }
+               
+               guard let documents = snapshot?.documents else { return }
+               
+               self?.foodPosts = documents.compactMap { document -> FoodPost? in
+                   let data = document.data()
+                   
+                   guard let id = data["id"] as? String,
+                         let title = data["title"] as? String,
+                         let foodImages = data["foodImages"] as? [String],
+                         let description = data["description"] as? String,
+                         let foodItemsData = data["foodItems"] as? [[String: Any]],
+                         let totalCalories = data["totalCalories"] as? Int,
+                         let createdAt = data["createdAt"] as? Timestamp,
+                         let mealTime = data["mealTime"] as? String,
+                         let isShared = data["isShared"] as? Bool,
+                         let likeCount = data["likeCount"] as? Int else {
+                       return nil
+                   }
+                   
+                   let foodItems = foodItemsData.compactMap { itemData -> FoodItem? in
+                       guard let name = itemData["name"] as? String,
+                             let calories = itemData["calories"] as? Int,
+                             let baseCalorie = itemData["baseCalorie"] as? Int,
+                             let amount = itemData["amount"] as? String,
+                             let type = itemData["type"] as? String else {
+                           return nil
+                       }
+                       return FoodItem(
+                           name: name,
+                           calories: calories,
+                           baseCalorie: baseCalorie,
+                           amount: amount,
+                           type: type
+                       )
+                   }
+                   
+                   return FoodPost(
+                       id: id,
+                       userUID: userUID,
+                       title: title,
+                       foodImages: foodImages,
+                       description: description,
+                       foodItems: foodItems,
+                       totalCalories: totalCalories,
+                       createdAt: createdAt,
+                       mealTime: mealTime,
+                       isShared: isShared,
+                       likeCount: likeCount
+                   )
+               }
+           }
+    }
     
     // MARK: - Helpers
     
-    func configureUI() {
+    private func updateTodayCalories() {
+        todayCalories = foodPosts.reduce(0) { $0 + $1.totalCalories }
+        progressBar.progress = Float(todayCalories) / 2000.0  // 예시로 목표 칼로리를 2000으로 설정
+    }
+    
+    private func configureUI() {
         view.backgroundColor = .white
         
         view.addSubview(nameLabel)
@@ -153,31 +253,27 @@ class ViewController: UIViewController {
         view.addSubview(floatingButton)
         
         NSLayoutConstraint.activate([
-            
             nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            
             todayLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10),
             todayLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            
             calendarButton.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10),
             calendarButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+            
             calorieLabel.topAnchor.constraint(equalTo: todayLabel.bottomAnchor, constant: 10),
             calorieLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             
-            // 프로그레스 바 (칼로리 그래프)
             progressBar.topAnchor.constraint(equalTo: calorieLabel.bottomAnchor, constant: 16),
             progressBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             progressBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
             
-            // divider (구분선)
             divider.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 16),
             divider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             divider.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
             divider.heightAnchor.constraint(equalToConstant: 2),
             
-            
-            // 오늘 먹은 음식 label
-            
-            // 컬렉션 뷰
             tableView.topAnchor.constraint(equalTo: divider.bottomAnchor, constant: 10),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -185,12 +281,10 @@ class ViewController: UIViewController {
             
             floatingButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
             floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -27)
-            
         ])
-        
     }
     
-    func presentPhotoPicker(sourceType: UIImagePickerController.SourceType) {
+    private func presentPhotoPicker(sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.sourceType = sourceType
@@ -198,9 +292,11 @@ class ViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDelegate, UITableViewDataSource
+
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return foodPosts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -208,24 +304,39 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             fatalError("The tableView could not dequeue a CalorieCell in ViewController")
         }
         
-        //        let calorie = Calorie.allCases[indexPath.row]
-        cell.configure()
+        let post = foodPosts[indexPath.row]
+        
+        cell.configure(with: post, image: nil)
+        
+        if let imageUrlString = post.foodImages.first,
+           let imageUrl = URL(string: imageUrlString) {
+            URLSession.shared.dataTask(with: imageUrl) { data, _, error in
+                if let error = error {
+                    print("DEBUG: 이미지 로드 실패: \(error.localizedDescription)")
+                    return
+                }
+                
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        cell.configure(with: post, image: image)
+                    }
+                }
+            }.resume()
+        }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //            let post = posts[indexPath.row]
-        
-        //            let courseDetailVC = CourseDetailVC(isBack: true)
-        //            courseDetailVC.hidesBottomBarWhenPushed = true
-        
-        //            courseDetailVC.postUid = post.uid
-        
-        self.navigationController?.pushViewController(RecordDetailController(), animated: true)
+        let post = foodPosts[indexPath.row]
+        let detailVC = RecordDetailController()
+        detailVC.configure(with: post)
+        navigationController?.pushViewController(detailVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: false)
     }
 }
+
+// MARK: - UIImagePickerControllerDelegate
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

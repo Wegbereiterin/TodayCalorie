@@ -12,6 +12,8 @@ import FirebaseAuth
 
 class FoodPostManager {
     static let shared = FoodPostManager()
+    private let db = Firestore.firestore()
+    private let storage = Storage.storage().reference()
     
     private init() {}
     
@@ -25,44 +27,112 @@ class FoodPostManager {
                 return
             }
             
-            // 2. Storage 참조 생성
-            let storage = Storage.storage()
-            print("DEBUG: Storage 버킷: \(storage.reference().bucket)")
+            // 2. 파일명 생성 (UUID + 타임스탬프)
+            let filename = "\(UUID().uuidString)_\(Int(Date().timeIntervalSince1970)).jpg"
+            let imageRef = storage.child("food_images").child(filename)
             
-            // 3. 경로 및 파일명 설정
-            let filename = "test.jpg"  // 테스트용 고정 파일명
-            let imageRef = storage.reference().child(filename)
+            print("DEBUG: 업로드 시도 - 경로: \(imageRef.fullPath)")
             
-            print("DEBUG: Storage 경로: \(imageRef.fullPath)")
-            
-            // 4. 메타데이터 설정
+            // 3. 메타데이터 설정
             let metadata = StorageMetadata()
             metadata.contentType = "image/jpeg"
             
-            // 5. 업로드 시작
-            print("DEBUG: 업로드 시작...")
-            let uploadTask = imageRef.putData(imageData, metadata: metadata) { (metadata, error) in
+            // 4. 업로드
+            let uploadTask = imageRef.putData(imageData, metadata: metadata) { metadata, error in
                 if let error = error {
-                    print("DEBUG: 업로드 실패 상세: \(error)")
+                    print("DEBUG: 업로드 실패: \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                     return
                 }
                 
-                print("DEBUG: 메타데이터: \(String(describing: metadata))")
-                continuation.resume(returning: filename)
+                // 5. 업로드 성공 후 다운로드 URL 가져오기
+                imageRef.downloadURL { url, error in
+                    if let error = error {
+                        print("DEBUG: URL 가져오기 실패: \(error.localizedDescription)")
+                        continuation.resume(throwing: error)
+                        return
+                    }
+                    
+                    guard let downloadURL = url else {
+                        continuation.resume(throwing: NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "다운로드 URL 없음"]))
+                        return
+                    }
+                    
+                    print("DEBUG: 업로드 성공! URL: \(downloadURL.absoluteString)")
+                    continuation.resume(returning: downloadURL.absoluteString)
+                }
             }
             
+            // 업로드 진행상황 모니터링
             uploadTask.observe(.progress) { snapshot in
-                let progress = snapshot.progress?.fractionCompleted ?? 0
-                print("DEBUG: 업로드 진행률: \(progress)")
+                print("DEBUG: 업로드 진행률: \(snapshot.progress?.fractionCompleted ?? 0)")
             }
         }
     }
     
-    func testImageUpload(_ image: UIImage) async throws -> String {
-        return try await uploadImage(image)
+    // 게시글 업로드
+    func uploadFoodPost(
+        title: String,
+        image: UIImage,
+        description: String,
+        foods: [Food],
+        totalCalories: Int,
+        mealTime: MealTime,
+        isShared: Bool
+    ) async throws {
+        // 1. 사용자 확인
+        guard let userUID = Auth.auth().currentUser?.uid else {
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "로그인이 필요합니다"])
+        }
+        
+        do {
+            // 2. 이미지 업로드
+            let imageURL = try await uploadImage(image)
+            print("DEBUG: 이미지 업로드 완료")
+            
+            // 3. Food 아이템 변환
+            let foodItems = foods.map { food in
+                FoodItem(
+                    name: food.name,
+                    calories: food.selectedCalorie,  // 선택된 양에 따른 실제 칼로리 사용
+                    baseCalorie: food.baseCalorie ?? 0,
+                    amount: food.selectedAmount,     // 선택된 양 사용
+                    type: String(describing: food.type)
+                )
+            }
+            
+            // 4. 게시글 데이터 생성
+            let postID = UUID().uuidString
+            let post = FoodPost(
+                id: postID,
+                userUID: userUID,
+                title: title,
+                foodImages: [imageURL],
+                description: description,
+                foodItems: foodItems,
+                totalCalories: totalCalories,
+                createdAt: Timestamp(),
+                mealTime: mealTime.rawValue,
+                isShared: isShared,
+                likeCount: 0
+            )
+            
+            // 5. Firestore에 저장
+            try await db.collection("food_posts").document(postID).setData(post.toDictionary())
+            
+            if isShared {
+                try await db.collection("posts").document(postID).setData(post.toDictionary())
+            }
+            
+            print("DEBUG: 게시글 업로드 완료")
+            
+        } catch {
+            print("DEBUG: 업로드 실패: \(error)")
+            throw error
+        }
     }
 }
+
 // MARK: - UIImage Extension
 extension UIImage {
     func resizeWithWidth(width: CGFloat) -> UIImage? {

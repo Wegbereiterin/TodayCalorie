@@ -61,7 +61,9 @@ struct Food {
     let image: UIImage
     let name: String
     let type: FoodType
-    let baseCalorie: Int?  // 직접 추가한 음식의 기본 칼로리
+    let baseCalorie: Int?
+    var selectedAmount: String  // 변경 가능하도록 var로 선언
+    var selectedCalorie: Int    // 변경 가능하도록 var로 선언
 }
 
 struct FoodCalorie: Codable {

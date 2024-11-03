@@ -348,12 +348,34 @@ extension AddFoodController: FoodOptionViewDelegate {
     func foodOptionView(_ view: FoodOptionView, didSelectAmount amount: Int, calories: Int) {
         guard let selectedIndex = foodGalleryView.selectedFoodIndex else { return }
         
+        // 선택된 음식 업데이트
+        var updatedFood = foods[selectedIndex]
+        updatedFood.selectedAmount = String(amount)
+        updatedFood.selectedCalorie = calories
+        foods[selectedIndex] = updatedFood
+        
         // 선택된 음식의 칼로리 업데이트
         selectedFoodCalories[selectedIndex] = calories
         
         // 전체 칼로리 다시 계산
         totalCalories = selectedFoodCalories.values.reduce(0, +)
     }
+    
+//    func foodOptionView(_ view: FoodOptionView, didSelectAmount amount: String, calories: Int) {
+//        guard let selectedIndex = foodGalleryView.selectedFoodIndex else { return }
+//        
+//        // 선택된 음식 업데이트
+//        var updatedFood = foods[selectedIndex]
+//        updatedFood.selectedAmount = amount
+//        updatedFood.selectedCalorie = calories
+//        foods[selectedIndex] = updatedFood
+//        
+//        // 선택된 음식의 칼로리 업데이트
+//        selectedFoodCalories[selectedIndex] = calories
+//        
+//        // 전체 칼로리 다시 계산
+//        totalCalories = selectedFoodCalories.values.reduce(0, +)
+//    }
 }
 
 // MARK: - MealTimeSelectionViewDelegate
@@ -385,57 +407,32 @@ extension AddFoodController: ShareOptionViewDelegate {
     }
 }
 
-// MARK: - AddButtonViewDelegate
-//extension AddFoodController: AddButtonViewDelegate {
-//    func addButtonViewDidTapAdd(_ view: AddButtonView) {
-//        // 데이터 검증
-//        guard let selectedTime = mealTimeSelectionView.getSelectedTime() else {
-//            // 알림: 식사 시간을 선택해주세요
-//            return
-//        }
-//        
-//        guard !foodContentView.title.isEmpty else {
-//            // 알림: 제목을 입력해주세요
-//            return
-//        }
-//        
-//        // 데이터 저장 및 처리
-//        let data = FoodData(
-//            title: foodContentView.title,
-//            content: foodContentView.content,
-//            mealTime: selectedTime,
-//            calories: totalCalories,
-//            isShared: shareOptionView.getShareStatus()
-//        )
-//        
-//        saveFoodData(data)
-//    }
-//    
-//    private func saveFoodData(_ data: FoodData) {
-//        print("Saving food data:", data)
-//        navigationController?.popViewController(animated: true)
-//    }
-//}
-
 // MARK: - DirectAddFoodDelegate
 extension AddFoodController: DirectAddFoodDelegate {
     func didAddNewFood(name: String, calorie: Int) {
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 100))
-        let grayImage = renderer.image { context in
-            UIColor.lightGray.setFill()
-            context.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
+            let renderer = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 100))
+            let grayImage = renderer.image { context in
+                UIColor.lightGray.setFill()
+                context.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
+            }
+            
+            // 새로운 Food 생성 시 기본값 설정
+        let newFood = Food(
+            image: grayImage,
+            name: name,
+            type: .custom,
+            baseCalorie: calorie,
+            selectedAmount: "1인분",
+            selectedCalorie: calorie  // 초기값은 baseCalorie와 동일
+        )
+            foods.append(newFood)
+            
+            let newIndex = foods.count - 1
+            selectedFoodCalories[newIndex] = calorie
+            totalCalories = selectedFoodCalories.values.reduce(0, +)
+            
+            foodGalleryView.configure(with: foods)
         }
-        
-        let newFood = Food(image: grayImage, name: name, type: .custom, baseCalorie: calorie)
-        foods.append(newFood)
-        
-        // 추가된 음식의 인덱스를 계산
-        let newIndex = foods.count - 1
-        selectedFoodCalories[newIndex] = calorie
-        totalCalories = selectedFoodCalories.values.reduce(0, +)
-        
-        foodGalleryView.configure(with: foods)
-    }
 }
 
 // MARK: - Image Processing
@@ -517,14 +514,15 @@ extension AddFoodController {
                let croppedImage = self.cropImage(originalImage, for: observation.boundingBox)
                let foodType = self.getFoodType(from: label.identifier)
                
-               // 과일 종류에 따른 기본 칼로리 설정
                let baseCalorie = FoodCalorieManager.shared.getCalorie(for: label.identifier)
                
                return Food(
                    image: croppedImage,
                    name: label.identifier,
                    type: foodType,
-                   baseCalorie: baseCalorie
+                   baseCalorie: baseCalorie,
+                   selectedAmount: "1인분",
+                   selectedCalorie: baseCalorie  // 초기값은 baseCalorie와 동일
                )
            }
            
@@ -570,99 +568,49 @@ extension AddFoodController {
 }
 
 extension AddFoodController: AddButtonViewDelegate {
-//    private func saveFoodPost() async {
-//            guard let image = imageSectionView.imageView.image else { return }
-//            
-//            showLoadingIndicator()
-//            
-//            do {
-//                try await FoodPostManager.shared.uploadFoodPost(
-//                    title: foodContentView.title,
-//                    image: image,
-//                    description: foodContentView.content,
-//                    foods: foods,
-//                    totalCalories: totalCalories,
-//                    mealTime: mealTimeSelectionView.getSelectedTime() ?? .morning,
-//                    isShared: shareOptionView.getShareStatus()
-//                )
-//                
-//                hideLoadingIndicator()
-//                dismiss(animated: true)
-//                
-//            } catch {
-//                hideLoadingIndicator()
-//                showAlert(message: "DEBUG: 업로드에 실패했습니다: \(error.localizedDescription)")
-//            }
-//        }
     
-    // 저장 버튼 탭 시
-//        func addButtonViewDidTapAdd(_ view: AddButtonView) {
-//            // 데이터 검증
-//            guard let selectedTime = mealTimeSelectionView.getSelectedTime() else {
-//                showAlert(message: "식사 시간을 선택해주세요")
-//                return
-//            }
-//            
-//            guard !foodContentView.title.isEmpty else {
-//                showAlert(message: "제목을 입력해주세요")
-//                return
-//            }
-//            
-//            // 이미지가 있는지 확인
-//            guard let image = imageSectionView.imageView.image else {
-//                showAlert(message: "이미지가 필요합니다")
-//                return
-//            }
-//            
-//            // Task를 사용하여 비동기 작업 처리
-//            Task {
-//                do {
-//                    // 로딩 표시
-//                    showLoadingIndicator()
-//                    print("DEBUG: 이미지? = \(image)")
-//                    try await FoodPostManager.shared.uploadFoodPost(
-//                        title: foodContentView.title,
-//                        image: image,
-//                        description: foodContentView.content,
-//                        foods: foods,
-//                        totalCalories: totalCalories,
-//                        mealTime: selectedTime,
-//                        isShared: shareOptionView.getShareStatus()
-//                    )
-//                    
-//                    // 로딩 숨김
-//                    hideLoadingIndicator()
-//                    // 성공시 화면 닫기
-//                    dismiss(animated: true)
-//                    
-//                } catch {
-//                    // 에러 처리
-//                    hideLoadingIndicator()
-//                    showAlert(message: "DEBUG: 업로드에 실패했습니다: \(error.localizedDescription)")
-//                }
-//            }
-//        }
-    
-    func addButtonViewDidTapAdd(_ view: AddButtonView) {
+        func addButtonViewDidTapAdd(_ view: AddButtonView) {
+            // 데이터 검증
+            guard let selectedTime = mealTimeSelectionView.getSelectedTime() else {
+                showAlert(message: "식사 시간을 선택해주세요")
+                return
+            }
+            
+            guard !foodContentView.title.isEmpty else {
+                showAlert(message: "제목을 입력해주세요")
+                return
+            }
+            
             guard let image = imageSectionView.imageView.image else {
                 showAlert(message: "이미지가 필요합니다")
                 return
             }
             
-            // 테스트 업로드
+            // 업로드 시작
             Task {
                 do {
                     showLoadingIndicator()
-                    let path = try await FoodPostManager.shared.testImageUpload(image)
-                    print("DEBUG: 업로드 성공. 파일명: \(path)")
+                    
+                    try await FoodPostManager.shared.uploadFoodPost(
+                        title: foodContentView.title,
+                        image: image,
+                        description: foodContentView.content,
+                        foods: foods,
+                        totalCalories: totalCalories,
+                        mealTime: selectedTime,
+                        isShared: shareOptionView.getShareStatus()
+                    )
+                    
                     hideLoadingIndicator()
+                    dismiss(animated: true)
+                    
                 } catch {
                     hideLoadingIndicator()
                     showAlert(message: "업로드 실패: \(error.localizedDescription)")
-                    print("DEBUG: 업로드 에러: \(error)")
-                }
+                
             }
         }
+    }
 
 }
 

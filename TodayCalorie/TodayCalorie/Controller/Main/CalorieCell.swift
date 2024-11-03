@@ -126,20 +126,39 @@ class CalorieCell: UITableViewCell {
             ])
     }
     
-    public func configure() {
-        self.foodNameLabel.text = "Apple"
-        self.calorieLabel.text = "95 Kcal"
-        self.detailLabel.text = "오늘 오전에 먹은 사과 1개"
-//        self.imageView?.image = UIImage(named: "placeholder")
-        self.foodImageView.image = UIImage(named: "Apple_Sample")
-        self.timeImage.image = UIImage(named: "Morning_T")
+    public func configure(with post: FoodPost, image: UIImage? = nil) {
+        self.foodNameLabel.text = post.title
+        self.calorieLabel.text = "\(post.totalCalories) Kcal"
+        
+        // 음식 목록 문자열 생성
+        let foodDescriptions = post.foodItems.map { "\($0.name)(\($0.calories)Kcal)" }
+            let fullText = foodDescriptions.joined(separator: ", ")
+        
+        // 최대 길이 설정 (예: 30자)
+        let maxLength = 30
+        let truncatedText = fullText.count > maxLength
+            ? fullText.prefix(maxLength) + "..."
+            : fullText
+        
+        self.detailLabel.text = truncatedText
+        
+        if let image = image {
+            self.foodImageView.image = image
+        }
+        
+        // 식사 시간에 따른 이미지 설정
+        switch post.mealTime {
+        case "Morning":
+            self.timeImage.image = UIImage(named: "Morning_T")
+        case "Afternoon":
+            self.timeImage.image = UIImage(named: "Afternoon_T")
+        case "Evening":
+            self.timeImage.image = UIImage(named: "Evening_T")
+        case "Snack":
+            self.timeImage.image = UIImage(named: "Snack_T")
+        default:
+            break
+        }
     }
-    
-//    public func configure(with model: Food) {
-//        self.foodNameLabel.text = model.foodName
-//        self.calorieLabel.text = "\(model.calories) Kcal"
-//        self.detailLabel.text = model.detail
-////        self.imageView.image = model.image
-//    }
     
 }

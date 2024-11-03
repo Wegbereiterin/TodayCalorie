@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class PostCell: UITableViewCell {
     
     // MARK: - Properties
     
     static let identifier: String = "PostCell"
+    private let db = Firestore.firestore()
     
     private let foodImageView: UIImageView = {
         let imageView = UIImageView()
@@ -32,6 +34,18 @@ class PostCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textColor = .black
+        label.backgroundColor = .white
+        label.layer.cornerRadius = 5
+        label.layer.masksToBounds = true
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 18, weight: .medium)
+        label.textColor = .black
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -39,7 +53,7 @@ class PostCell: UITableViewCell {
     
     private let foodNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textColor = .black
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -57,7 +71,7 @@ class PostCell: UITableViewCell {
     
     private let caloriesLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .systemFont(ofSize: 18, weight: .medium)
         label.textColor = .black
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -119,6 +133,14 @@ class PostCell: UITableViewCell {
         return stack
     }()
     
+    private let timeImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = .label
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     // MARK: - Lifecycle
     
     override func awakeFromNib() {
@@ -151,6 +173,7 @@ class PostCell: UITableViewCell {
         contentView.addSubview(foodImageView)
         foodImageView.addSubview(userNameLabel)
         contentView.addSubview(divider)
+        contentView.addSubview(titleLabel)
         contentView.addSubview(foodNameLabel)
         contentView.addSubview(likesLabel)
         contentView.addSubview(caloriesLabel)
@@ -174,31 +197,79 @@ class PostCell: UITableViewCell {
             divider.heightAnchor.constraint(equalToConstant: 1),
             
             // 음식 이름
-            foodNameLabel.topAnchor.constraint(equalTo: divider.bottomAnchor, constant: 16),
-            foodNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.topAnchor.constraint(equalTo: divider.bottomAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             // 좋아요
-            likesLabel.centerYAnchor.constraint(equalTo: foodNameLabel.centerYAnchor),
+            likesLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
             likesLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
             // 칼로리
-            caloriesLabel.topAnchor.constraint(equalTo: foodNameLabel.bottomAnchor, constant: 8),
+            caloriesLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             caloriesLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             // 상세 설명
-            detailLabel.topAnchor.constraint(equalTo: caloriesLabel.bottomAnchor, constant: 8),
+            foodNameLabel.topAnchor.constraint(equalTo: caloriesLabel.bottomAnchor, constant: 8),
+            foodNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            foodNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            // 상세 설명
+            detailLabel.topAnchor.constraint(equalTo: foodNameLabel.bottomAnchor, constant: 8),
             detailLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             detailLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
     }
     
-    func configure() {
-        userNameLabel.text = "사용자 이름"
-        foodNameLabel.text = "Apple"
-        likesLabel.text = "좋아요 16"
-        caloriesLabel.text = "95 Kcal"
-        detailLabel.text = "오늘 오전에 먹은 사과 1개"
-        foodImageView.image = UIImage(named: "Apple_Sample")
+    public func configure(with post: FoodPost, image: UIImage? = nil) {
+        // userUID로 사용자 이름 가져오기
+        db.collection("users").document(post.userUID).getDocument { [weak self] snapshot, error in
+            if let error = error {
+                print("DEBUG: 작성자 정보 로드 실패: \(error.localizedDescription)")
+                return
+            }
+            
+            if let data = snapshot?.data(),
+               let name = data["name"] as? String {
+                DispatchQueue.main.async {
+                    self?.userNameLabel.text = name  // 작성자의 이름으로 설정
+                }
+            }
+        }
+        
+        self.titleLabel.text = post.title
+        self.caloriesLabel.text = "\(post.totalCalories) Kcal"
+        
+        // 음식 목록 문자열 생성
+        let foodDescriptions = post.foodItems.map { "\($0.name)(\($0.calories)Kcal)" }
+            let fullText = foodDescriptions.joined(separator: ", ")
+        
+        // 최대 길이 설정 (예: 30자)
+        let maxLength = 30
+        let truncatedText = fullText.count > maxLength
+            ? fullText.prefix(maxLength) + "..."
+            : fullText
+        
+        self.foodNameLabel.text = truncatedText
+        self.detailLabel.text = post.description
+        self.likesLabel.text = "좋아요 \(post.likeCount)"
+        
+        if let image = image {
+            self.foodImageView.image = image
+        }
+        
+        // 식사 시간에 따른 이미지 설정
+        switch post.mealTime {
+        case "Morning":
+            self.timeImage.image = UIImage(named: "Morning_T")
+        case "Afternoon":
+            self.timeImage.image = UIImage(named: "Afternoon_T")
+        case "Evening":
+            self.timeImage.image = UIImage(named: "Evening_T")
+        case "Snack":
+            self.timeImage.image = UIImage(named: "Snack_T")
+        default:
+            break
+        }
     }
     
 }
