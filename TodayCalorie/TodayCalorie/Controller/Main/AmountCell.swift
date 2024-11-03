@@ -88,22 +88,22 @@ class AmountCell: UITableViewCell {
     }
     
     private func updateAppearance() {
-            UIView.animate(withDuration: 0.2) {
-                self.containerView.backgroundColor = self.isCustomSelected ? .main : .white
-                self.amountLabel.textColor = self.isCustomSelected ? .black : .black
-                self.gramLabel.textColor = self.isCustomSelected ? .gray : .darkGray
-                self.calorieLabel.textColor = self.isCustomSelected ? .black : .black
-            }
+        UIView.animate(withDuration: 0.2) {
+            self.containerView.backgroundColor = self.isCustomSelected ? .main : .white
+            self.amountLabel.textColor = self.isCustomSelected ? .black : .black
+            self.gramLabel.textColor = self.isCustomSelected ? .gray : .darkGray
+            self.calorieLabel.textColor = self.isCustomSelected ? .black : .black
         }
-        
-        override func setSelected(_ selected: Bool, animated: Bool) {
-            super.setSelected(selected, animated: animated)
-            isCustomSelected = selected
-        }
-        
-        override func prepareForReuse() {
-            super.prepareForReuse()
-            isCustomSelected = false
-            updateAppearance()
-        }
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        isCustomSelected = selected
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        isCustomSelected = false
+        updateAppearance()
+    }
 }

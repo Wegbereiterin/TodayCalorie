@@ -11,7 +11,7 @@ class EatTimeButton: UIButton {
     
     // MARK: - Properties
     
-    private var type: eatType?
+    private var type: MealTime?
     
     private let timeLabel: UILabel = {
         let label = UILabel()
@@ -71,7 +71,7 @@ class EatTimeButton: UIButton {
         ])
     }
     
-    func configure(type: eatType) {
+    func configure(type: MealTime) {
         self.type = type
         timeLabel.text = type.title
         updateUI()
@@ -91,22 +91,5 @@ class EatTimeButton: UIButton {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-enum eatType: String {
-    case morning = "Morning"
-    case afternoon = "Afternoon"
-    case evening = "Evening"
-    case snack = "Snack"
-    
-    var title: String {
-        switch self {
-        case .morning: return "아침"
-        case .afternoon: return "점심"
-        case .evening: return "저녁"
-        case .snack: return "간식"
-            
-        }
     }
 }

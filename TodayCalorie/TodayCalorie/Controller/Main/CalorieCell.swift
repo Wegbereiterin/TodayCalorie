@@ -18,6 +18,7 @@ class CalorieCell: UITableViewCell {
     let detail: String = ""
     let image: UIImage? = nil
     let timeToEat: String = ""
+    let foodList: [String] = []
     
     private let foodImageView: UIImageView = {
         let imageView = UIImageView()

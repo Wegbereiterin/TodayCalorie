@@ -14,10 +14,31 @@
 		6127A7CC2CCB58CE002F0122 /* RecordDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */; };
 		6127A7CE2CCBE2B2002F0122 /* FloatingMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CD2CCBE2B2002F0122 /* FloatingMenuButton.swift */; };
 		6127A7D02CCCCCC6002F0122 /* ClassificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */; };
-		6127A7D22CCCD021002F0122 /* FoodClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */; };
 		6127A7D42CCCD0A2002F0122 /* CGImageProperyOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */; };
 		6127A7D62CCD7459002F0122 /* ButtonColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D52CCD7459002F0122 /* ButtonColor.swift */; };
 		6127A7D82CCE3729002F0122 /* EatTimeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D72CCE3729002F0122 /* EatTimeButton.swift */; };
+		6153E7842CD6AC2600367CFA /* FoodPortionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7822CD6AC2600367CFA /* FoodPortionOption.swift */; };
+		6153E7852CD6AC2600367CFA /* AddCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7752CD6AC2600367CFA /* AddCell.swift */; };
+		6153E7862CD6AC2600367CFA /* AmountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E77D2CD6AC2600367CFA /* AmountCell.swift */; };
+		6153E7872CD6AC2600367CFA /* FoodOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E77B2CD6AC2600367CFA /* FoodOptionView.swift */; };
+		6153E7882CD6AC2600367CFA /* FoodGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7772CD6AC2600367CFA /* FoodGalleryView.swift */; };
+		6153E7892CD6AC2600367CFA /* directAddFood.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7832CD6AC2600367CFA /* directAddFood.swift */; };
+		6153E78A2CD6AC2600367CFA /* FoodModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E77F2CD6AC2600367CFA /* FoodModel.swift */; };
+		6153E78B2CD6AC2600367CFA /* SelectImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7802CD6AC2600367CFA /* SelectImageViewController.swift */; };
+		6153E78C2CD6AC2600367CFA /* FoodCalorieManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7812CD6AC2600367CFA /* FoodCalorieManager.swift */; };
+		6153E78D2CD6AC2600367CFA /* ImageSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7762CD6AC2600367CFA /* ImageSectionView.swift */; };
+		6153E78E2CD6AC2600367CFA /* FoodCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7742CD6AC2600367CFA /* FoodCell.swift */; };
+		6153E78F2CD6AC2600367CFA /* MealTimeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7782CD6AC2600367CFA /* MealTimeSelectionView.swift */; };
+		6153E7902CD6AC2600367CFA /* ShareOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7792CD6AC2600367CFA /* ShareOptionView.swift */; };
+		6153E7912CD6AC2600367CFA /* FoodContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E77C2CD6AC2600367CFA /* FoodContentView.swift */; };
+		6153E7922CD6AC2600367CFA /* addButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E77A2CD6AC2600367CFA /* addButtonView.swift */; };
+		6153E7932CD6AC2600367CFA /* UIResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E77E2CD6AC2600367CFA /* UIResponder.swift */; };
+		6153E7952CD6AD1900367CFA /* best-2.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7942CD6AD1900367CFA /* best-2.mlpackage */; };
+		6153E7972CD6AD1D00367CFA /* Middle_Finger_Detection.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7962CD6AD1D00367CFA /* Middle_Finger_Detection.mlpackage */; };
+		6153E7992CD6B09A00367CFA /* FoodCalories.json in Resources */ = {isa = PBXBuildFile; fileRef = 6153E7982CD6B09A00367CFA /* FoodCalories.json */; };
+		6153E79B2CD7482A00367CFA /* FoodPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E79A2CD7482A00367CFA /* FoodPost.swift */; };
+		6153E79D2CD7486900367CFA /* FoodPostManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E79C2CD7486900367CFA /* FoodPostManager.swift */; };
+		6153E79F2CD78F6800367CFA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6153E79E2CD78F6800367CFA /* GoogleService-Info.plist */; };
 		618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335B2CAEDD87009D071B /* AppDelegate.swift */; };
 		618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335D2CAEDD87009D071B /* SceneDelegate.swift */; };
 		618F33602CAEDD87009D071B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335F2CAEDD87009D071B /* ViewController.swift */; };
@@ -25,7 +46,6 @@
 		618F33652CAEDD88009D071B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 618F33642CAEDD88009D071B /* Assets.xcassets */; };
 		618F33682CAEDD88009D071B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 618F33672CAEDD88009D071B /* Base */; };
 		61A099A22CCA883A00339B66 /* CalorieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A099A12CCA883A00339B66 /* CalorieCell.swift */; };
-		61A099A72CCA8DF700339B66 /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A099A62CCA8DF700339B66 /* Food.swift */; };
 		61D705AE2CCE85AF00640F47 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D705AD2CCE85AF00640F47 /* LoginController.swift */; };
 		61D705B02CCE863C00640F47 /* RegistrationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D705AF2CCE863C00640F47 /* RegistrationController.swift */; };
 		61D705B52CCE8F7700640F47 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705B42CCE8F7700640F47 /* FirebaseAuth */; };
@@ -33,7 +53,6 @@
 		61D705B92CCE8F7700640F47 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705B82CCE8F7700640F47 /* FirebaseDatabase */; };
 		61D705BB2CCE8F7700640F47 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705BA2CCE8F7700640F47 /* FirebaseFirestore */; };
 		61D705BD2CCE8F7700640F47 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 61D705BC2CCE8F7700640F47 /* FirebaseStorage */; };
-		61E53E2F2CCEA7E600E8DBB1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 61E53E2E2CCEA7E600E8DBB1 /* GoogleService-Info.plist */; };
 		61E53E312CCF118600E8DBB1 /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E53E302CCF118600E8DBB1 /* PostCell.swift */; };
 		61E53E392CCFFCD300E8DBB1 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E53E382CCFFCD300E8DBB1 /* User.swift */; };
 		61E53E3B2CCFFD7A00E8DBB1 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E53E3A2CCFFD7A00E8DBB1 /* UserService.swift */; };
@@ -49,10 +68,31 @@
 		6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDetailController.swift; sourceTree = "<group>"; };
 		6127A7CD2CCBE2B2002F0122 /* FloatingMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingMenuButton.swift; sourceTree = "<group>"; };
 		6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationViewController.swift; sourceTree = "<group>"; };
-		6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FoodClassifier.mlmodel; sourceTree = "<group>"; };
 		6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGImageProperyOrientation.swift; sourceTree = "<group>"; };
 		6127A7D52CCD7459002F0122 /* ButtonColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColor.swift; sourceTree = "<group>"; };
 		6127A7D72CCE3729002F0122 /* EatTimeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatTimeButton.swift; sourceTree = "<group>"; };
+		6153E7742CD6AC2600367CFA /* FoodCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodCell.swift; sourceTree = "<group>"; };
+		6153E7752CD6AC2600367CFA /* AddCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCell.swift; sourceTree = "<group>"; };
+		6153E7762CD6AC2600367CFA /* ImageSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSectionView.swift; sourceTree = "<group>"; };
+		6153E7772CD6AC2600367CFA /* FoodGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodGalleryView.swift; sourceTree = "<group>"; };
+		6153E7782CD6AC2600367CFA /* MealTimeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealTimeSelectionView.swift; sourceTree = "<group>"; };
+		6153E7792CD6AC2600367CFA /* ShareOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareOptionView.swift; sourceTree = "<group>"; };
+		6153E77A2CD6AC2600367CFA /* addButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addButtonView.swift; sourceTree = "<group>"; };
+		6153E77B2CD6AC2600367CFA /* FoodOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodOptionView.swift; sourceTree = "<group>"; };
+		6153E77C2CD6AC2600367CFA /* FoodContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodContentView.swift; sourceTree = "<group>"; };
+		6153E77D2CD6AC2600367CFA /* AmountCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountCell.swift; sourceTree = "<group>"; };
+		6153E77E2CD6AC2600367CFA /* UIResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIResponder.swift; sourceTree = "<group>"; };
+		6153E77F2CD6AC2600367CFA /* FoodModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodModel.swift; sourceTree = "<group>"; };
+		6153E7802CD6AC2600367CFA /* SelectImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectImageViewController.swift; sourceTree = "<group>"; };
+		6153E7812CD6AC2600367CFA /* FoodCalorieManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodCalorieManager.swift; sourceTree = "<group>"; };
+		6153E7822CD6AC2600367CFA /* FoodPortionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPortionOption.swift; sourceTree = "<group>"; };
+		6153E7832CD6AC2600367CFA /* directAddFood.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = directAddFood.swift; sourceTree = "<group>"; };
+		6153E7942CD6AD1900367CFA /* best-2.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = "best-2.mlpackage"; sourceTree = "<group>"; };
+		6153E7962CD6AD1D00367CFA /* Middle_Finger_Detection.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Middle_Finger_Detection.mlpackage; sourceTree = "<group>"; };
+		6153E7982CD6B09A00367CFA /* FoodCalories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = FoodCalories.json; sourceTree = "<group>"; };
+		6153E79A2CD7482A00367CFA /* FoodPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPost.swift; sourceTree = "<group>"; };
+		6153E79C2CD7486900367CFA /* FoodPostManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPostManager.swift; sourceTree = "<group>"; };
+		6153E79E2CD78F6800367CFA /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		618F33582CAEDD87009D071B /* TodayCalorie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodayCalorie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		618F335B2CAEDD87009D071B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		618F335D2CAEDD87009D071B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,10 +102,8 @@
 		618F33672CAEDD88009D071B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		618F33692CAEDD88009D071B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61A099A12CCA883A00339B66 /* CalorieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieCell.swift; sourceTree = "<group>"; };
-		61A099A62CCA8DF700339B66 /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 		61D705AD2CCE85AF00640F47 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		61D705AF2CCE863C00640F47 /* RegistrationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationController.swift; sourceTree = "<group>"; };
-		61E53E2E2CCEA7E600E8DBB1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		61E53E302CCF118600E8DBB1 /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		61E53E382CCFFCD300E8DBB1 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		61E53E3A2CCFFD7A00E8DBB1 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -94,6 +132,7 @@
 			children = (
 				61E53E3A2CCFFD7A00E8DBB1 /* UserService.swift */,
 				61E53E3E2CD0042000E8DBB1 /* AuthService.swift */,
+				6153E79C2CD7486900367CFA /* FoodPostManager.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -141,6 +180,21 @@
 				6127A7C92CCB5869002F0122 /* AddFoodController.swift */,
 				6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */,
 				6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */,
+				6153E7742CD6AC2600367CFA /* FoodCell.swift */,
+				6153E7752CD6AC2600367CFA /* AddCell.swift */,
+				6153E7762CD6AC2600367CFA /* ImageSectionView.swift */,
+				6153E7772CD6AC2600367CFA /* FoodGalleryView.swift */,
+				6153E7782CD6AC2600367CFA /* MealTimeSelectionView.swift */,
+				6153E7792CD6AC2600367CFA /* ShareOptionView.swift */,
+				6153E77A2CD6AC2600367CFA /* addButtonView.swift */,
+				6153E77B2CD6AC2600367CFA /* FoodOptionView.swift */,
+				6153E77C2CD6AC2600367CFA /* FoodContentView.swift */,
+				6153E77D2CD6AC2600367CFA /* AmountCell.swift */,
+				6153E77E2CD6AC2600367CFA /* UIResponder.swift */,
+				6153E7802CD6AC2600367CFA /* SelectImageViewController.swift */,
+				6153E7812CD6AC2600367CFA /* FoodCalorieManager.swift */,
+				6153E7822CD6AC2600367CFA /* FoodPortionOption.swift */,
+				6153E7832CD6AC2600367CFA /* directAddFood.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -181,9 +235,11 @@
 		618F335A2CAEDD87009D071B /* TodayCalorie */ = {
 			isa = PBXGroup;
 			children = (
-				6127A7D12CCCD021002F0122 /* FoodClassifier.mlmodel */,
+				6153E7982CD6B09A00367CFA /* FoodCalories.json */,
+				6153E7942CD6AD1900367CFA /* best-2.mlpackage */,
+				6153E7962CD6AD1D00367CFA /* Middle_Finger_Detection.mlpackage */,
 				618F33692CAEDD88009D071B /* Info.plist */,
-				61E53E2E2CCEA7E600E8DBB1 /* GoogleService-Info.plist */,
+				6153E79E2CD78F6800367CFA /* GoogleService-Info.plist */,
 				6104BE152CC75F7500F6CF69 /* Root */,
 				6104BE142CC75F6000F6CF69 /* Controller */,
 				61A099A32CCA8DCF00339B66 /* Model */,
@@ -197,8 +253,9 @@
 		61A099A32CCA8DCF00339B66 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				61A099A62CCA8DF700339B66 /* Food.swift */,
 				61E53E382CCFFCD300E8DBB1 /* User.swift */,
+				6153E77F2CD6AC2600367CFA /* FoodModel.swift */,
+				6153E79A2CD7482A00367CFA /* FoodPost.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -274,8 +331,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				618F33652CAEDD88009D071B /* Assets.xcassets in Resources */,
-				61E53E2F2CCEA7E600E8DBB1 /* GoogleService-Info.plist in Resources */,
 				618F33682CAEDD88009D071B /* Base in Resources */,
+				6153E79F2CD78F6800367CFA /* GoogleService-Info.plist in Resources */,
+				6153E7992CD6B09A00367CFA /* FoodCalories.json in Resources */,
 				618F33632CAEDD87009D071B /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,19 +345,36 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6153E7952CD6AD1900367CFA /* best-2.mlpackage in Sources */,
 				6104BE1C2CC9475700F6CF69 /* SettingController.swift in Sources */,
 				6127A7CC2CCB58CE002F0122 /* RecordDetailController.swift in Sources */,
 				618F33602CAEDD87009D071B /* ViewController.swift in Sources */,
+				6153E7842CD6AC2600367CFA /* FoodPortionOption.swift in Sources */,
+				6153E7852CD6AC2600367CFA /* AddCell.swift in Sources */,
+				6153E7862CD6AC2600367CFA /* AmountCell.swift in Sources */,
+				6153E7872CD6AC2600367CFA /* FoodOptionView.swift in Sources */,
+				6153E7882CD6AC2600367CFA /* FoodGalleryView.swift in Sources */,
+				6153E7892CD6AC2600367CFA /* directAddFood.swift in Sources */,
+				6153E78A2CD6AC2600367CFA /* FoodModel.swift in Sources */,
+				6153E78B2CD6AC2600367CFA /* SelectImageViewController.swift in Sources */,
+				6153E78C2CD6AC2600367CFA /* FoodCalorieManager.swift in Sources */,
+				6153E78D2CD6AC2600367CFA /* ImageSectionView.swift in Sources */,
+				6153E78E2CD6AC2600367CFA /* FoodCell.swift in Sources */,
+				6153E78F2CD6AC2600367CFA /* MealTimeSelectionView.swift in Sources */,
+				6153E7902CD6AC2600367CFA /* ShareOptionView.swift in Sources */,
+				6153E7972CD6AD1D00367CFA /* Middle_Finger_Detection.mlpackage in Sources */,
+				6153E7912CD6AC2600367CFA /* FoodContentView.swift in Sources */,
+				6153E7922CD6AC2600367CFA /* addButtonView.swift in Sources */,
+				6153E7932CD6AC2600367CFA /* UIResponder.swift in Sources */,
 				6127A7D82CCE3729002F0122 /* EatTimeButton.swift in Sources */,
 				61E53E412CD007AB00E8DBB1 /* KeyboardExtension.swift in Sources */,
+				6153E79D2CD7486900367CFA /* FoodPostManager.swift in Sources */,
 				618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */,
 				61E53E3F2CD0042000E8DBB1 /* AuthService.swift in Sources */,
-				6127A7D22CCCD021002F0122 /* FoodClassifier.mlmodel in Sources */,
 				6127A7CA2CCB5869002F0122 /* AddFoodController.swift in Sources */,
 				6104BE172CC75FFB00F6CF69 /* MainTabController.swift in Sources */,
 				61E53E392CCFFCD300E8DBB1 /* User.swift in Sources */,
 				61A099A22CCA883A00339B66 /* CalorieCell.swift in Sources */,
-				61A099A72CCA8DF700339B66 /* Food.swift in Sources */,
 				61D705B02CCE863C00640F47 /* RegistrationController.swift in Sources */,
 				6127A7D02CCCCCC6002F0122 /* ClassificationViewController.swift in Sources */,
 				61E53E312CCF118600E8DBB1 /* PostCell.swift in Sources */,
@@ -310,6 +385,7 @@
 				6127A7D42CCCD0A2002F0122 /* CGImageProperyOrientation.swift in Sources */,
 				6127A7D62CCD7459002F0122 /* ButtonColor.swift in Sources */,
 				6127A7CE2CCBE2B2002F0122 /* FloatingMenuButton.swift in Sources */,
+				6153E79B2CD7482A00367CFA /* FoodPost.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

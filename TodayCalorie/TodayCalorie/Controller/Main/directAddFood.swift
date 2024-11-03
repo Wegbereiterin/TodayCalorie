@@ -8,7 +8,7 @@
 import UIKit
 
 protocol DirectAddFoodDelegate: AnyObject {
-//    func didAddNewFood(name: String, calorie: Int)
+    //    func didAddNewFood(name: String, calorie: Int)
     func didAddNewFood(name: String, calorie: Int)
 }
 

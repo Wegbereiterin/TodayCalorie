@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "박선구님"
+        label.text = "사용자님"
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         
         label.textColor = .black
@@ -125,7 +125,7 @@ class ViewController: UIViewController {
     }()
     
     // MARK: - Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -186,8 +186,8 @@ class ViewController: UIViewController {
             floatingButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
             floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -27)
             
-            ])
-            
+        ])
+        
     }
     
     func presentPhotoPicker(sourceType: UIImagePickerController.SourceType) {
@@ -205,26 +205,26 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CalorieCell.identifier, for: indexPath) as? CalorieCell else {
-                    fatalError("The tableView could not dequeue a CalorieCell in ViewController")
-                }
+            fatalError("The tableView could not dequeue a CalorieCell in ViewController")
+        }
         
-//        let calorie = Calorie.allCases[indexPath.row]
+        //        let calorie = Calorie.allCases[indexPath.row]
         cell.configure()
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//            let post = posts[indexPath.row]
-            
-//            let courseDetailVC = CourseDetailVC(isBack: true)
-//            courseDetailVC.hidesBottomBarWhenPushed = true
-            
-//            courseDetailVC.postUid = post.uid
-            
+        //            let post = posts[indexPath.row]
+        
+        //            let courseDetailVC = CourseDetailVC(isBack: true)
+        //            courseDetailVC.hidesBottomBarWhenPushed = true
+        
+        //            courseDetailVC.postUid = post.uid
+        
         self.navigationController?.pushViewController(RecordDetailController(), animated: true)
-            tableView.deselectRow(at: indexPath, animated: false)
-        }
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -232,11 +232,9 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         picker.dismiss(animated: true)
         
         if let image = info[.originalImage] as? UIImage {
-            let foodClassificationVC = ClassificationViewController()
-            foodClassificationVC.selectedImage = image
-//            navigationController?.pushViewController(foodClassificationVC, animated: true)
-            
-            let navigationController = UINavigationController(rootViewController: foodClassificationVC)
+            let addFoodController = AddFoodController()
+            addFoodController.processSelectedImage(image)
+            let navigationController = UINavigationController(rootViewController: addFoodController)
             navigationController.modalPresentationStyle = .fullScreen
             present(navigationController, animated: true)
         }
