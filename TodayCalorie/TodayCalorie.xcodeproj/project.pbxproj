@@ -13,7 +13,6 @@
 		6127A7CA2CCB5869002F0122 /* AddFoodController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7C92CCB5869002F0122 /* AddFoodController.swift */; };
 		6127A7CC2CCB58CE002F0122 /* RecordDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */; };
 		6127A7CE2CCBE2B2002F0122 /* FloatingMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CD2CCBE2B2002F0122 /* FloatingMenuButton.swift */; };
-		6127A7D02CCCCCC6002F0122 /* ClassificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */; };
 		6127A7D42CCCD0A2002F0122 /* CGImageProperyOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */; };
 		6127A7D62CCD7459002F0122 /* ButtonColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D52CCD7459002F0122 /* ButtonColor.swift */; };
 		6127A7D82CCE3729002F0122 /* EatTimeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6127A7D72CCE3729002F0122 /* EatTimeButton.swift */; };
@@ -40,6 +39,8 @@
 		6153E79D2CD7486900367CFA /* FoodPostManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E79C2CD7486900367CFA /* FoodPostManager.swift */; };
 		6153E79F2CD78F6800367CFA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6153E79E2CD78F6800367CFA /* GoogleService-Info.plist */; };
 		6153E7A12CD7F1AE00367CFA /* PostDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7A02CD7F1AE00367CFA /* PostDetailController.swift */; };
+		6153E7A32CD80FCC00367CFA /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7A22CD80FCC00367CFA /* CalendarViewController.swift */; };
+		6153E7A52CD811A200367CFA /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7A42CD811A200367CFA /* CustomTabBar.swift */; };
 		618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335B2CAEDD87009D071B /* AppDelegate.swift */; };
 		618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335D2CAEDD87009D071B /* SceneDelegate.swift */; };
 		618F33602CAEDD87009D071B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335F2CAEDD87009D071B /* ViewController.swift */; };
@@ -68,7 +69,6 @@
 		6127A7C92CCB5869002F0122 /* AddFoodController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodController.swift; sourceTree = "<group>"; };
 		6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDetailController.swift; sourceTree = "<group>"; };
 		6127A7CD2CCBE2B2002F0122 /* FloatingMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingMenuButton.swift; sourceTree = "<group>"; };
-		6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationViewController.swift; sourceTree = "<group>"; };
 		6127A7D32CCCD0A2002F0122 /* CGImageProperyOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGImageProperyOrientation.swift; sourceTree = "<group>"; };
 		6127A7D52CCD7459002F0122 /* ButtonColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonColor.swift; sourceTree = "<group>"; };
 		6127A7D72CCE3729002F0122 /* EatTimeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatTimeButton.swift; sourceTree = "<group>"; };
@@ -95,6 +95,8 @@
 		6153E79C2CD7486900367CFA /* FoodPostManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPostManager.swift; sourceTree = "<group>"; };
 		6153E79E2CD78F6800367CFA /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6153E7A02CD7F1AE00367CFA /* PostDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailController.swift; sourceTree = "<group>"; };
+		6153E7A22CD80FCC00367CFA /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
+		6153E7A42CD811A200367CFA /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		618F33582CAEDD87009D071B /* TodayCalorie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodayCalorie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		618F335B2CAEDD87009D071B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		618F335D2CAEDD87009D071B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -147,6 +149,8 @@
 				6127A7D52CCD7459002F0122 /* ButtonColor.swift */,
 				6127A7D72CCE3729002F0122 /* EatTimeButton.swift */,
 				61E53E402CD007AB00E8DBB1 /* KeyboardExtension.swift */,
+				6153E7A22CD80FCC00367CFA /* CalendarViewController.swift */,
+				6153E7A42CD811A200367CFA /* CustomTabBar.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -181,7 +185,6 @@
 				61A099A12CCA883A00339B66 /* CalorieCell.swift */,
 				6127A7C92CCB5869002F0122 /* AddFoodController.swift */,
 				6127A7CB2CCB58CE002F0122 /* RecordDetailController.swift */,
-				6127A7CF2CCCCCC6002F0122 /* ClassificationViewController.swift */,
 				6153E7742CD6AC2600367CFA /* FoodCell.swift */,
 				6153E7752CD6AC2600367CFA /* AddCell.swift */,
 				6153E7762CD6AC2600367CFA /* ImageSectionView.swift */,
@@ -380,11 +383,12 @@
 				61E53E392CCFFCD300E8DBB1 /* User.swift in Sources */,
 				61A099A22CCA883A00339B66 /* CalorieCell.swift in Sources */,
 				61D705B02CCE863C00640F47 /* RegistrationController.swift in Sources */,
-				6127A7D02CCCCCC6002F0122 /* ClassificationViewController.swift in Sources */,
 				61E53E312CCF118600E8DBB1 /* PostCell.swift in Sources */,
 				61E53E3B2CCFFD7A00E8DBB1 /* UserService.swift in Sources */,
 				61D705AE2CCE85AF00640F47 /* LoginController.swift in Sources */,
+				6153E7A52CD811A200367CFA /* CustomTabBar.swift in Sources */,
 				618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */,
+				6153E7A32CD80FCC00367CFA /* CalendarViewController.swift in Sources */,
 				6104BE1E2CC9476500F6CF69 /* PostController.swift in Sources */,
 				6127A7D42CCCD0A2002F0122 /* CGImageProperyOrientation.swift in Sources */,
 				6127A7D62CCD7459002F0122 /* ButtonColor.swift in Sources */,

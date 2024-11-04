@@ -36,6 +36,7 @@ class SettingController: UIViewController {
         button.setTitle("로그아웃", for: .normal)
         button.setTitleColor(.fontGray, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -90,6 +91,21 @@ class SettingController: UIViewController {
     }
     
     // MARK: - Selectors
+    
+    @objc func handleLogout() {
+            do {
+                try AuthService.shared.signOut()
+                print("DEBUG: User logged out")
+                // Logout and navigate to LoginController
+                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+                let window = windowScene.windows.first
+                let loginController = LoginController()
+                window?.rootViewController = loginController
+                window?.makeKeyAndVisible()
+            } catch {
+                print("DEBUG: Failed to log out: \(error.localizedDescription)")
+            }
+        }
     
     // MARK: - Helpers
     

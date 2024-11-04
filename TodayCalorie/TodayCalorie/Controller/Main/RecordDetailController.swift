@@ -180,6 +180,8 @@ class RecordDetailController: UIViewController {
    override func viewDidLoad() {
        super.viewDidLoad()
        
+       self.navigationController?.navigationBar.isHidden = false
+       self.navigationController?.navigationBar.tintColor = .black
        configureUI()
    }
    
@@ -270,13 +272,13 @@ class RecordDetailController: UIViewController {
             
             // 식사 시간에 따른 이미지 설정
             switch post.mealTime {
-            case "morning":
+            case "Morning":
                 timeImageView.image = UIImage(named: "Morning_T")
-            case "lunch":
-                timeImageView.image = UIImage(named: "Lunch_T")
-            case "evening":
+            case "Afternoon":
+                timeImageView.image = UIImage(named: "Afternoon_T")
+            case "Evening":
                 timeImageView.image = UIImage(named: "Evening_T")
-            case "snack":
+            case "Snack":
                 timeImageView.image = UIImage(named: "Snack_T")
             default:
                 break

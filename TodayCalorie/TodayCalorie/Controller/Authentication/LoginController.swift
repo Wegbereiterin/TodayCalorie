@@ -104,7 +104,7 @@ class LoginController: UIViewController {
                 let user = try await AuthService.shared.signIn(withEmail: email, password: password)
                 
                 await MainActor.run {
-                    let viewController = ViewController()
+                    let viewController = MainTabController()
                     navigationController?.pushViewController(viewController, animated: true)
                 }
             } catch {

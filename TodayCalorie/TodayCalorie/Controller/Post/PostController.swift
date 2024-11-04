@@ -43,6 +43,7 @@ class PostController: UIViewController {
         
         // 섹션 기본 여백 제거
         tableView.sectionHeaderTopPadding = 0
+        tableView.tableFooterView = UIView(frame: .init(x: 0, y: 0, width: 0, height: 100))
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
@@ -67,6 +68,12 @@ class PostController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadTodayFoodPosts()
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     // MARK: - Selectors
@@ -79,14 +86,24 @@ class PostController: UIViewController {
         view.addSubview(tableView)
         view.addSubview(postLabel)
         
+//        NSLayoutConstraint.activate([
+//            postLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+//            postLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+//            
+//            tableView.topAnchor.constraint(equalTo: postLabel.bottomAnchor, constant: 10),
+//            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+//            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+//            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+//        ])
+        
         NSLayoutConstraint.activate([
             postLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             postLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             
             tableView.topAnchor.constraint(equalTo: postLabel.bottomAnchor, constant: 10),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     

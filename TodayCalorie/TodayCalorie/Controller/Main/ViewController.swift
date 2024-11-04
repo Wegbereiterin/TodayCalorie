@@ -13,6 +13,12 @@ class ViewController: UIViewController {
     
     // MARK: - Properties
     
+    private var selectedDate: Date = Date() {
+        didSet {
+            updateForDate(selectedDate)
+        }
+    }
+    
     private var foodPosts: [FoodPost] = [] {
         didSet {
             tableView.reloadData()
@@ -100,6 +106,7 @@ class ViewController: UIViewController {
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         tableView.allowsSelection = true
+        tableView.tableFooterView = UIView(frame: .init(x: 0, y: 0, width: 0, height: 100))
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -135,13 +142,27 @@ class ViewController: UIViewController {
         tableView.dataSource = self
         
         loadUserInfo()
-        loadTodayFoodPosts()
+        loadFoodPostsForDate(selectedDate)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        loadTodayFoodPosts()
+        loadFoodPostsForDate(selectedDate)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    // MARK: - Selectors
+    
+    @objc func calendarButtonTapped() {
+            let calendarVC = CalendarViewController()
+            calendarVC.delegate = self
+        calendarVC.modalPresentationStyle = .popover
+            present(calendarVC, animated: true)
+        }
     
     // MARK: - API
     
@@ -161,83 +182,103 @@ class ViewController: UIViewController {
         }
     }
     
-    private func loadTodayFoodPosts() {
-       guard let userUID = Auth.auth().currentUser?.uid else { return }
-       
-       // 오늘 날짜의 시작과 끝 계산
-       let calendar = Calendar.current
-       let now = Date()
-       let startOfDay = calendar.startOfDay(for: now)
-       let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-       
-       db.collection("food_posts")
-           .whereField("userUID", isEqualTo: userUID)
-    //            .whereField("createdAt", isGreaterThanOrEqualTo: Timestamp(date: startOfDay))
-    //            .whereField("createdAt", isLessThan: Timestamp(date: endOfDay))
-    //            .order(by: "createdAt", descending: true)
-           .getDocuments { [weak self] snapshot, error in
-               if let error = error {
-                   print("DEBUG: 데이터 로드 실패: \(error.localizedDescription)")
-                   return
-               }
-               
-               guard let documents = snapshot?.documents else { return }
-               
-               self?.foodPosts = documents.compactMap { document -> FoodPost? in
-                   let data = document.data()
-                   
-                   guard let id = data["id"] as? String,
-                         let title = data["title"] as? String,
-                         let foodImages = data["foodImages"] as? [String],
-                         let description = data["description"] as? String,
-                         let foodItemsData = data["foodItems"] as? [[String: Any]],
-                         let totalCalories = data["totalCalories"] as? Int,
-                         let createdAt = data["createdAt"] as? Timestamp,
-                         let mealTime = data["mealTime"] as? String,
-                         let isShared = data["isShared"] as? Bool,
-                         let likeCount = data["likeCount"] as? Int else {
-                       return nil
-                   }
-                   
-                   let foodItems = foodItemsData.compactMap { itemData -> FoodItem? in
-                       guard let name = itemData["name"] as? String,
-                             let calories = itemData["calories"] as? Int,
-                             let baseCalorie = itemData["baseCalorie"] as? Int,
-                             let amount = itemData["amount"] as? String,
-                             let type = itemData["type"] as? String else {
-                           return nil
-                       }
-                       return FoodItem(
-                           name: name,
-                           calories: calories,
-                           baseCalorie: baseCalorie,
-                           amount: amount,
-                           type: type
-                       )
-                   }
-                   
-                   return FoodPost(
-                       id: id,
-                       userUID: userUID,
-                       title: title,
-                       foodImages: foodImages,
-                       description: description,
-                       foodItems: foodItems,
-                       totalCalories: totalCalories,
-                       createdAt: createdAt,
-                       mealTime: mealTime,
-                       isShared: isShared,
-                       likeCount: likeCount
-                   )
-               }
-           }
+    private func loadFoodPostsForDate(_ date: Date) {
+        guard let userUID = Auth.auth().currentUser?.uid else { return }
+        
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        print("DEBUG: Loading posts for date: \(date)")  // 디버깅용
+        
+        db.collection("food_posts")
+            .whereField("userUID", isEqualTo: userUID)
+            .whereField("createdAt", isGreaterThanOrEqualTo: Timestamp(date: startOfDay))
+            .whereField("createdAt", isLessThan: Timestamp(date: endOfDay))
+            .order(by: "createdAt", descending: true)
+            .getDocuments { [weak self] snapshot, error in
+                if let error = error {
+                    print("DEBUG: 데이터 로드 실패: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else { return }
+                print("DEBUG: Found \(documents.count) posts for date")  // 디버깅용
+                
+                let posts = documents.compactMap { document -> FoodPost? in
+                    let data = document.data()
+                    
+                    guard let id = data["id"] as? String,
+                          let title = data["title"] as? String,
+                          let foodImages = data["foodImages"] as? [String],
+                          let description = data["description"] as? String,
+                          let foodItemsData = data["foodItems"] as? [[String: Any]],
+                          let totalCalories = data["totalCalories"] as? Int,
+                          let createdAt = data["createdAt"] as? Timestamp,
+                          let mealTime = data["mealTime"] as? String,
+                          let isShared = data["isShared"] as? Bool,
+                          let likeCount = data["likeCount"] as? Int else {
+                        return nil
+                    }
+                    
+                    let foodItems = foodItemsData.compactMap { itemData -> FoodItem? in
+                        guard let name = itemData["name"] as? String,
+                              let calories = itemData["calories"] as? Int,
+                              let baseCalorie = itemData["baseCalorie"] as? Int,
+                              let amount = itemData["amount"] as? String,
+                              let type = itemData["type"] as? String else {
+                            return nil
+                        }
+                        return FoodItem(
+                            name: name,
+                            calories: calories,
+                            baseCalorie: baseCalorie,
+                            amount: amount,
+                            type: type
+                        )
+                    }
+                    
+                    return FoodPost(
+                        id: id,
+                        userUID: userUID,
+                        title: title,
+                        foodImages: foodImages,
+                        description: description,
+                        foodItems: foodItems,
+                        totalCalories: totalCalories,
+                        createdAt: createdAt,
+                        mealTime: mealTime,
+                        isShared: isShared,
+                        likeCount: likeCount
+                    )
+                }
+                
+                DispatchQueue.main.async {
+                    self?.foodPosts = posts  // foodPosts 업데이트
+                    print("DEBUG: Updated foodPosts with \(posts.count) items")  // 디버깅용
+                }
+            }
     }
     
     // MARK: - Helpers
     
+    private func updateProgressColor() {
+        switch progressBar.progress {
+        case 0.0..<0.33:
+            progressBar.progressTintColor = .main  // 예시 색상
+        case 0.33..<0.66:
+            progressBar.progressTintColor = .green
+        case 0.66..<1.0:
+            progressBar.progressTintColor = .orange
+        default:
+            progressBar.progressTintColor = .red
+        }
+    }
+    
     private func updateTodayCalories() {
         todayCalories = foodPosts.reduce(0) { $0 + $1.totalCalories }
-        progressBar.progress = Float(todayCalories) / 2000.0  // 예시로 목표 칼로리를 2000으로 설정
+        progressBar.progress = Float(todayCalories) / 2000.0  // 목표 칼로리 2000
+        updateProgressColor()  // 프로그레스 바 색상 업데이트
     }
     
     private func configureUI() {
@@ -280,8 +321,10 @@ class ViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             floatingButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
-            floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -27)
+            floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -100)
         ])
+        
+        calendarButton.addTarget(self, action: #selector(calendarButtonTapped), for: .touchUpInside)
     }
     
     private func presentPhotoPicker(sourceType: UIImagePickerController.SourceType) {
@@ -290,15 +333,31 @@ class ViewController: UIViewController {
         picker.sourceType = sourceType
         present(picker, animated: true, completion: nil)
     }
+    
+    private func updateForDate(_ date: Date) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+
+        if Calendar.current.isDateInToday(date) {
+            todayLabel.text = "오늘 섭취한 총 칼로리"
+        } else {
+            todayLabel.text = "\(dateFormatter.string(from: date)) 섭취한 총 칼로리"
+        }
+        
+        loadFoodPostsForDate(date)
+    }
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    // 테이블뷰 행 개수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return foodPosts.count
     }
     
+    // 테이블뷰 셀 설정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CalorieCell.identifier, for: indexPath) as? CalorieCell else {
             fatalError("The tableView could not dequeue a CalorieCell in ViewController")
@@ -327,6 +386,45 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    // 삭제 기능 추가
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let post = foodPosts[indexPath.row]
+            
+            // Firebase에서 게시글 삭제
+            let db = Firestore.firestore()
+            
+            // food_posts 컬렉션에서 삭제
+            db.collection("food_posts").document(post.id).delete { [weak self] error in
+                if let error = error {
+                    print("DEBUG: Firestore에서 게시글 삭제 실패: \(error.localizedDescription)")
+                    return
+                }
+                
+                print("DEBUG: Firestore에서 게시글 삭제 성공")
+                
+                // posts 컬렉션에서도 삭제
+                db.collection("posts").document(post.id).delete { error in
+                    if let error = error {
+                        print("DEBUG: posts 컬렉션에서 게시글 삭제 실패: \(error.localizedDescription)")
+                    } else {
+                        print("DEBUG: posts 컬렉션에서 게시글 삭제 성공")
+                    }
+                    
+                    // 로컬 데이터 배열에서 삭제
+                    DispatchQueue.main.async { [weak self] in
+                        // 데이터 소스에서 삭제
+                        self?.foodPosts.remove(at: indexPath.row)
+                        
+                        // 테이블뷰 전체를 리로드하여 상태를 동기화
+                        tableView.reloadData()
+                    }
+                }
+            }
+        }
+    }
+    
+    // 테이블뷰 행 선택 시 동작
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let post = foodPosts[indexPath.row]
         let detailVC = RecordDetailController()
@@ -335,6 +433,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: false)
     }
 }
+
+
+
 
 // MARK: - UIImagePickerControllerDelegate
 
@@ -350,5 +451,11 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             present(navigationController, animated: true)
         }
     }
+}
+
+extension ViewController: DateSelectionDelegate {
+   func didSelectDate(_ date: Date) {
+       selectedDate = date
+   }
 }
 

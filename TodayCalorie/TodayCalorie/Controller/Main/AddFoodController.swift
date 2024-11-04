@@ -360,22 +360,6 @@ extension AddFoodController: FoodOptionViewDelegate {
         // 전체 칼로리 다시 계산
         totalCalories = selectedFoodCalories.values.reduce(0, +)
     }
-    
-//    func foodOptionView(_ view: FoodOptionView, didSelectAmount amount: String, calories: Int) {
-//        guard let selectedIndex = foodGalleryView.selectedFoodIndex else { return }
-//        
-//        // 선택된 음식 업데이트
-//        var updatedFood = foods[selectedIndex]
-//        updatedFood.selectedAmount = amount
-//        updatedFood.selectedCalorie = calories
-//        foods[selectedIndex] = updatedFood
-//        
-//        // 선택된 음식의 칼로리 업데이트
-//        selectedFoodCalories[selectedIndex] = calories
-//        
-//        // 전체 칼로리 다시 계산
-//        totalCalories = selectedFoodCalories.values.reduce(0, +)
-//    }
 }
 
 // MARK: - MealTimeSelectionViewDelegate
