@@ -15,6 +15,8 @@ class PostCell: UITableViewCell {
     static let identifier: String = "PostCell"
     private let db = Firestore.firestore()
     
+    var imageLoadTask: URLSessionDataTask?
+    
     private let foodImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -147,6 +149,20 @@ class PostCell: UITableViewCell {
         super.awakeFromNib()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageLoadTask?.cancel()
+        // 모든 UI 요소 초기화
+        foodImageView.image = UIImage(named: "placeholder_image")
+        userNameLabel.text = nil
+        titleLabel.text = nil
+        foodNameLabel.text = nil
+        likesLabel.text = nil
+        caloriesLabel.text = nil
+        detailLabel.text = nil
+        timeImage.image = nil
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.configureUI()
@@ -241,13 +257,13 @@ class PostCell: UITableViewCell {
         
         // 음식 목록 문자열 생성
         let foodDescriptions = post.foodItems.map { "\($0.name)(\($0.calories)Kcal)" }
-            let fullText = foodDescriptions.joined(separator: ", ")
+        let fullText = foodDescriptions.joined(separator: ", ")
         
         // 최대 길이 설정 (예: 30자)
         let maxLength = 30
         let truncatedText = fullText.count > maxLength
-            ? fullText.prefix(maxLength) + "..."
-            : fullText
+        ? fullText.prefix(maxLength) + "..."
+        : fullText
         
         self.foodNameLabel.text = truncatedText
         self.detailLabel.text = post.description

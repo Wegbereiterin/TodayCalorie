@@ -603,7 +603,7 @@ extension AddFoodController {
         let activityIndicator = UIActivityIndicatorView(style: .large)
         activityIndicator.tag = 999
         activityIndicator.center = view.center
-        activityIndicator.color = .gray
+        activityIndicator.color = .blue
         activityIndicator.startAnimating()
         
         view.addSubview(activityIndicator)

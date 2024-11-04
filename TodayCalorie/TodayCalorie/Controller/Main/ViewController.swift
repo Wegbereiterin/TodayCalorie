@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     
     // MARK: - Properties
     
+    var maxCalorie = 2000
+    
     private var selectedDate: Date = Date() {
         didSet {
             updateForDate(selectedDate)
@@ -23,6 +25,7 @@ class ViewController: UIViewController {
         didSet {
             tableView.reloadData()
             updateTodayCalories()
+            updateEmptyState()
         }
     }
     
@@ -112,12 +115,12 @@ class ViewController: UIViewController {
     }()
     
     lazy var menuItems = [
-//        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "pencil")!, title: "이미지없이 글작성", action: {
-//            let addFoodController = AddFoodController()
-//            let navigationController = UINavigationController(rootViewController: addFoodController)
-//            navigationController.modalPresentationStyle = .fullScreen
-//            self.present(navigationController, animated: true)
-//        }),
+        //        FloatingMenuButton.MenuItem(icon: UIImage(systemName: "pencil")!, title: "이미지없이 글작성", action: {
+        //            let addFoodController = AddFoodController()
+        //            let navigationController = UINavigationController(rootViewController: addFoodController)
+        //            navigationController.modalPresentationStyle = .fullScreen
+        //            self.present(navigationController, animated: true)
+        //        }),
         FloatingMenuButton.MenuItem(icon: UIImage(systemName: "photo")!, title: "이미지선택", action: { [weak self] in
             self?.presentPhotoPicker(sourceType: UIImagePickerController.SourceType.photoLibrary)
         }),
@@ -158,11 +161,11 @@ class ViewController: UIViewController {
     // MARK: - Selectors
     
     @objc func calendarButtonTapped() {
-            let calendarVC = CalendarViewController()
-            calendarVC.delegate = self
+        let calendarVC = CalendarViewController()
+        calendarVC.delegate = self
         calendarVC.modalPresentationStyle = .popover
-            present(calendarVC, animated: true)
-        }
+        present(calendarVC, animated: true)
+    }
     
     // MARK: - API
     
@@ -337,7 +340,7 @@ class ViewController: UIViewController {
     private func updateForDate(_ date: Date) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-
+        
         if Calendar.current.isDateInToday(date) {
             todayLabel.text = "오늘 섭취한 총 칼로리"
         } else {
@@ -345,6 +348,38 @@ class ViewController: UIViewController {
         }
         
         loadFoodPostsForDate(date)
+    }
+    
+    private func updateEmptyState() {
+        if foodPosts.isEmpty {
+            let emptyImageView = UIImageView(image: UIImage(systemName: "text.page.slash.rtl"))
+            emptyImageView.tintColor = .lightGray
+            emptyImageView.contentMode = .scaleAspectFit
+            emptyImageView.translatesAutoresizingMaskIntoConstraints = false
+
+            let emptyLabel = UILabel()
+            emptyLabel.text = "기록이 없습니다"
+            emptyLabel.font = .systemFont(ofSize: 18, weight: .medium)
+            emptyLabel.textColor = .lightGray
+            emptyLabel.textAlignment = .center
+
+            let stackView = UIStackView(arrangedSubviews: [emptyImageView, emptyLabel])
+            stackView.axis = .vertical
+            stackView.alignment = .center
+            stackView.spacing = 8
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+
+            tableView.backgroundView = stackView
+
+            NSLayoutConstraint.activate([
+                stackView.centerXAnchor.constraint(equalTo: tableView.centerXAnchor),
+                stackView.centerYAnchor.constraint(equalTo: tableView.centerYAnchor, constant: -100),
+                emptyImageView.widthAnchor.constraint(equalToConstant: 50),
+                emptyImageView.heightAnchor.constraint(equalToConstant: 50)
+            ])
+        } else {
+            tableView.backgroundView = nil
+        }
     }
 }
 
@@ -365,22 +400,38 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         let post = foodPosts[indexPath.row]
         
-        cell.configure(with: post, image: nil)
+        // 기본 데이터로 먼저 구성
+        cell.configure(with: post, image: UIImage(named: "placeholder_image"))
         
         if let imageUrlString = post.foodImages.first,
            let imageUrl = URL(string: imageUrlString) {
-            URLSession.shared.dataTask(with: imageUrl) { data, _, error in
-                if let error = error {
-                    print("DEBUG: 이미지 로드 실패: \(error.localizedDescription)")
-                    return
-                }
-                
-                if let data = data, let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        cell.configure(with: post, image: image)
+            
+            // 캐시에서 이미지 확인
+            if let cachedImage = ImageCache.shared.getImage(for: imageUrl) {
+                cell.configure(with: post, image: cachedImage)
+            } else {
+                // 이미지 로드 및 캐시
+                cell.imageLoadTask = URLSession.shared.dataTask(with: imageUrl) { [weak cell] data, _, error in
+                    if let error = error {
+                        print("DEBUG: 이미지 로드 실패: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    if let data = data, let image = UIImage(data: data) {
+                        // 이미지를 캐시에 저장
+                        ImageCache.shared.setImage(image, for: imageUrl)
+                        
+                        DispatchQueue.main.async {
+                            // 셀이 아직 화면에 표시되어 있는지 확인
+                            if let cell = cell, let indexPathNow = tableView.indexPath(for: cell),
+                               indexPathNow == indexPath {
+                                cell.configure(with: post, image: image)
+                            }
+                        }
                     }
                 }
-            }.resume()
+                cell.imageLoadTask?.resume()
+            }
         }
         
         return cell
@@ -457,5 +508,35 @@ extension ViewController: DateSelectionDelegate {
    func didSelectDate(_ date: Date) {
        selectedDate = date
    }
+}
+
+// MARK: - Scroll
+
+extension ViewController {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            loadImagesForVisibleCells()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        loadImagesForVisibleCells()
+    }
+    
+    private func loadImagesForVisibleCells() {
+        guard let visibleCells = tableView.visibleCells as? [CalorieCell] else { return }
+        for cell in visibleCells {
+            if let indexPath = tableView.indexPath(for: cell) {
+                let post = foodPosts[indexPath.row]
+                if let imageUrlString = post.foodImages.first,
+                   let imageUrl = URL(string: imageUrlString) {
+                    // 이미지가 캐시에 있는 경우에만 즉시 로드
+                    if let cachedImage = ImageCache.shared.getImage(for: imageUrl) {
+                        cell.configure(with: post, image: cachedImage)
+                    }
+                }
+            }
+        }
+    }
 }
 

@@ -13,6 +13,8 @@ class CalorieCell: UITableViewCell {
     
     static let identifier: String = "CalorieCell"
     
+    var imageLoadTask: URLSessionDataTask?
+    
     let foodName: String = ""
     let calorie: Int = 0
     let detail: String = ""
@@ -66,7 +68,7 @@ class CalorieCell: UITableViewCell {
     
     private let timeImage: UIImageView = {
         let imageView = UIImageView()
-//        imageView.image = UIImage(systemName: "clock")
+        //        imageView.image = UIImage(systemName: "clock")
         imageView.tintColor = .label
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -81,6 +83,16 @@ class CalorieCell: UITableViewCell {
         func setSelected(_ selected: Bool, animated: Bool) {
             
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageLoadTask?.cancel()
+        foodImageView.image = UIImage(named: "placeholder_image")
+        foodNameLabel.text = nil
+        calorieLabel.text = nil
+        detailLabel.text = nil
+        timeImage.image = nil
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -123,7 +135,7 @@ class CalorieCell: UITableViewCell {
             timeImage.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor),
             timeImage.trailingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.trailingAnchor)
             
-            ])
+        ])
     }
     
     public func configure(with post: FoodPost, image: UIImage? = nil) {
@@ -132,13 +144,13 @@ class CalorieCell: UITableViewCell {
         
         // 음식 목록 문자열 생성
         let foodDescriptions = post.foodItems.map { "\($0.name)(\($0.calories)Kcal)" }
-            let fullText = foodDescriptions.joined(separator: ", ")
+        let fullText = foodDescriptions.joined(separator: ", ")
         
         // 최대 길이 설정 (예: 30자)
         let maxLength = 30
         let truncatedText = fullText.count > maxLength
-            ? fullText.prefix(maxLength) + "..."
-            : fullText
+        ? fullText.prefix(maxLength) + "..."
+        : fullText
         
         self.detailLabel.text = truncatedText
         

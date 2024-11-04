@@ -181,22 +181,38 @@ extension PostController: UITableViewDelegate, UITableViewDataSource {
         
         let post = posts[indexPath.row]
         
-        cell.configure(with: post, image: nil)
+        // 기본 데이터로 먼저 구성
+        cell.configure(with: post, image: UIImage(named: "placeholder_image"))
         
         if let imageUrlString = post.foodImages.first,
            let imageUrl = URL(string: imageUrlString) {
-            URLSession.shared.dataTask(with: imageUrl) { data, _, error in
-                if let error = error {
-                    print("DEBUG: 이미지 로드 실패: \(error.localizedDescription)")
-                    return
-                }
-                
-                if let data = data, let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        cell.configure(with: post, image: image)
+            
+            // 캐시에서 이미지 확인
+            if let cachedImage = ImageCache.shared.getImage(for: imageUrl) {
+                cell.configure(with: post, image: cachedImage)
+            } else {
+                // 이미지 로드 및 캐시
+                cell.imageLoadTask = URLSession.shared.dataTask(with: imageUrl) { [weak cell] data, _, error in
+                    if let error = error {
+                        print("DEBUG: 이미지 로드 실패: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    if let data = data, let image = UIImage(data: data) {
+                        // 이미지를 캐시에 저장
+                        ImageCache.shared.setImage(image, for: imageUrl)
+                        
+                        DispatchQueue.main.async {
+                            // 셀이 아직 화면에 표시되어 있는지 확인
+                            if let cell = cell, let indexPathNow = tableView.indexPath(for: cell),
+                               indexPathNow == indexPath {
+                                cell.configure(with: post, image: image)
+                            }
+                        }
                     }
                 }
-            }.resume()
+                cell.imageLoadTask?.resume()
+            }
         }
         
         return cell
@@ -225,5 +241,33 @@ extension PostController: UITableViewDelegate, UITableViewDataSource {
     // 푸터 높이 0으로 설정
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0
+    }
+}
+
+extension PostController {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            loadImagesForVisibleCells()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        loadImagesForVisibleCells()
+    }
+    
+    private func loadImagesForVisibleCells() {
+        guard let visibleCells = tableView.visibleCells as? [PostCell] else { return }
+        for cell in visibleCells {
+            if let indexPath = tableView.indexPath(for: cell) {
+                let post = posts[indexPath.row]
+                if let imageUrlString = post.foodImages.first,
+                   let imageUrl = URL(string: imageUrlString) {
+                    // 이미지가 캐시에 있는 경우에만 즉시 로드
+                    if let cachedImage = ImageCache.shared.getImage(for: imageUrl) {
+                        cell.configure(with: post, image: cachedImage)
+                    }
+                }
+            }
+        }
     }
 }

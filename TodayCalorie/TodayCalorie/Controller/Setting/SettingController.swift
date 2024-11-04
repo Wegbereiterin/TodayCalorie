@@ -6,10 +6,15 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
 class SettingController: UIViewController {
     
     // MARK: - Propertie
+    
+    private let db = Firestore.firestore()
+    weak var viewController: ViewController?
     
     let settingLabel: UILabel = {
         let label = UILabel()
@@ -52,7 +57,15 @@ class SettingController: UIViewController {
         return button
     }()
     
-    let divider: UIView = {
+    let divider1: UIView = {
+        let divider = UIView()
+        divider.backgroundColor = .black
+        
+        divider.translatesAutoresizingMaskIntoConstraints = false
+        return divider
+    }()
+    
+    let divider2: UIView = {
         let divider = UIView()
         divider.backgroundColor = .black
         
@@ -80,6 +93,42 @@ class SettingController: UIViewController {
         return label
     }()
     
+    let maxCalorieLabel: UILabel = {
+        let label = UILabel()
+        label.text = "일일 평균 칼로리 기준"
+        label.font = .systemFont(ofSize: 16)
+        label.textColor = .black
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let manButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("남", for: .normal)
+        button.setTitleColor(.gray, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 18)
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.gray.cgColor
+        button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(didTapManButton), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    let womanButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("여", for: .normal)
+        button.setTitleColor(.gray, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 18)
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.gray.cgColor
+        button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(didTapWomanButton), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -87,6 +136,7 @@ class SettingController: UIViewController {
         
         navigationController?.navigationBar.isHidden = true
         
+        loadUserInfo()
         configureUI()
     }
     
@@ -107,6 +157,16 @@ class SettingController: UIViewController {
             }
         }
     
+    @objc func didTapManButton() {
+            viewController?.maxCalorie = 2000
+            updateButtonUI(selectedButton: manButton, deselectedButton: womanButton)
+        }
+        
+        @objc func didTapWomanButton() {
+            viewController?.maxCalorie = 1600
+            updateButtonUI(selectedButton: womanButton, deselectedButton: manButton)
+        }
+    
     // MARK: - Helpers
     
     func configureUI() {
@@ -116,9 +176,13 @@ class SettingController: UIViewController {
         view.addSubview(userNameLabel)
         view.addSubview(logoutButton)
         view.addSubview(deleteAccountButton)
-        view.addSubview(divider)
+        view.addSubview(divider1)
         view.addSubview(versionInformationLabel)
         view.addSubview(versionLabel)
+        view.addSubview(divider2)
+        view.addSubview(maxCalorieLabel)
+        view.addSubview(manButton)
+        view.addSubview(womanButton)
         
         NSLayoutConstraint.activate([
             settingLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
@@ -133,18 +197,58 @@ class SettingController: UIViewController {
             deleteAccountButton.topAnchor.constraint(equalTo: logoutButton.bottomAnchor, constant: 16),
             deleteAccountButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            divider.topAnchor.constraint(equalTo: deleteAccountButton.bottomAnchor, constant: 16),
-            divider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            divider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            divider.heightAnchor.constraint(equalToConstant: 1),
+            divider1.topAnchor.constraint(equalTo: deleteAccountButton.bottomAnchor, constant: 16),
+            divider1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            divider1.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            divider1.heightAnchor.constraint(equalToConstant: 1),
             
-            versionInformationLabel.topAnchor.constraint(equalTo: divider.bottomAnchor, constant: 16),
+            versionInformationLabel.topAnchor.constraint(equalTo: divider1.bottomAnchor, constant: 16),
             versionInformationLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             
-            versionLabel.topAnchor.constraint(equalTo: divider.bottomAnchor, constant: 16),
-            versionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            versionLabel.topAnchor.constraint(equalTo: divider1.bottomAnchor, constant: 16),
+            versionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            divider2.topAnchor.constraint(equalTo: versionInformationLabel.bottomAnchor, constant: 16),
+            divider2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            divider2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            divider2.heightAnchor.constraint(equalToConstant: 1),
+            
+            maxCalorieLabel.topAnchor.constraint(equalTo: divider2.bottomAnchor, constant: 28),
+            maxCalorieLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            
+            manButton.topAnchor.constraint(equalTo: divider2.bottomAnchor, constant: 16),
+            manButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            manButton.widthAnchor.constraint(equalToConstant: 60),
+                        manButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            womanButton.topAnchor.constraint(equalTo: divider2.bottomAnchor, constant: 16),
+            womanButton.trailingAnchor.constraint(equalTo: manButton.leadingAnchor, constant: -8),
+            womanButton.widthAnchor.constraint(equalToConstant: 60),
+                        womanButton.heightAnchor.constraint(equalToConstant: 40),
             
         ])
+        
+        updateButtonUI(selectedButton: manButton, deselectedButton: womanButton)
     }
     
+    private func loadUserInfo() {
+        guard let userUID = Auth.auth().currentUser?.uid else { return }
+        
+        db.collection("users").document(userUID).getDocument { [weak self] snapshot, error in
+            if let error = error {
+                print("DEBUG: 사용자 정보 로드 실패: \(error.localizedDescription)")
+                return
+            }
+            
+            if let data = snapshot?.data(),
+               let name = data["name"] as? String {
+                self?.userNameLabel.text = name
+            }
+        }
+    }
+    
+    private func updateButtonUI(selectedButton: UIButton, deselectedButton: UIButton) {
+            selectedButton.backgroundColor = selectedButton.titleColor(for: .normal)?.withAlphaComponent(0.1)
+            deselectedButton.backgroundColor = .clear
+        }
 }

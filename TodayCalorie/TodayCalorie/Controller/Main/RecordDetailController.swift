@@ -99,7 +99,7 @@ class RecordDetailController: UIViewController {
        label.font = .systemFont(ofSize: 14, weight: .semibold)
        label.textColor = .black
        label.numberOfLines = 0
-       label.textAlignment = .right
+       label.textAlignment = .left
        
        label.text = "아침에 간단하게 먹어봤다\n시커먹은 치즈버거 세트"
        
