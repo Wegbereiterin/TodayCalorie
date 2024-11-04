@@ -47,7 +47,7 @@ class PostDetailController: UIViewController {
     
     private let foodImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.backgroundColor = .white
         imageView.layer.cornerRadius = 20
@@ -356,7 +356,7 @@ class PostDetailController: UIViewController {
         container.translatesAutoresizingMaskIntoConstraints = false
         
         let nameLabel = UILabel()
-        nameLabel.text = "\(foodItem.name) (\(foodItem.amount))"
+        nameLabel.text = "\(foodItem.name)"
         nameLabel.font = .systemFont(ofSize: 14, weight: .medium)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -435,6 +435,8 @@ class PostDetailController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16),
             stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
+            
+            foodImageView.heightAnchor.constraint(equalTo: foodImageView.widthAnchor),
             
             divider.heightAnchor.constraint(equalToConstant: 1),
             

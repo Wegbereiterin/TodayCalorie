@@ -234,7 +234,8 @@ class RecordDetailController: UIViewController {
         container.translatesAutoresizingMaskIntoConstraints = false
         
         let nameLabel = UILabel()
-        nameLabel.text = "\(foodItem.name) (\(foodItem.amount))"
+//        nameLabel.text = "\(foodItem.name) (\(foodItem.amount))"
+        nameLabel.text = "\(foodItem.name)"
         nameLabel.font = .systemFont(ofSize: 14, weight: .medium)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         

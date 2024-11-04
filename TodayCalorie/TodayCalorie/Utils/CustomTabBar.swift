@@ -21,8 +21,9 @@ class CustomTabBar: UIView {
         stack.layer.borderColor = UIColor.gray.cgColor
         stack.layer.borderWidth = 1
         stack.layer.shadowColor = UIColor.black.cgColor
-        stack.layer.shadowOffset = .zero
-        stack.layer.shadowRadius = 10
+        stack.layer.shadowOffset = CGSize(width: 0, height: 2)
+        stack.layer.shadowOpacity = 0.1
+        stack.layer.shadowRadius = 3
         return stack
     }()
     

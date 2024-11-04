@@ -86,16 +86,6 @@ class PostController: UIViewController {
         view.addSubview(tableView)
         view.addSubview(postLabel)
         
-//        NSLayoutConstraint.activate([
-//            postLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-//            postLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-//            
-//            tableView.topAnchor.constraint(equalTo: postLabel.bottomAnchor, constant: 10),
-//            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-//            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-//            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-//        ])
-        
         NSLayoutConstraint.activate([
             postLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             postLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -109,6 +99,7 @@ class PostController: UIViewController {
     
     private func loadTodayFoodPosts() {
         db.collection("posts")
+            .order(by: "likeCount", descending: true)
             .getDocuments { [weak self] snapshot, error in
                 if let error = error {
                     print("DEBUG: 데이터 로드 실패: \(error.localizedDescription)")
