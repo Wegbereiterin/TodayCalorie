@@ -16,6 +16,8 @@ class AddFoodController: UIViewController {
     
     private var detectionBoxes: [UIView] = []
     
+    private var selectedFoodCalories: [String: Int] = [:]
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "어떤 식사를 하셨나요?"
@@ -91,7 +93,7 @@ class AddFoodController: UIViewController {
     }()
     
     // Data
-    private lazy var selectedFoodCalories: [Int: Int] = [:]
+//    private lazy var selectedFoodCalories: [Int: Int] = [:]
     private lazy var totalCalories: Int = 0 {
         didSet {
             imageSectionView.configure(with: imageSectionView.imageView.image, calories: totalCalories)
@@ -261,6 +263,17 @@ class AddFoodController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
+    private func reindexFoodCalories() {
+        // 이름을 키로 사용하는 새로운 딕셔너리 생성
+        let newSelectedFoodCalories: [String: Int] = Dictionary(uniqueKeysWithValues:
+            foods.map { food in
+                (food.name, selectedFoodCalories[food.name] ?? food.selectedCalorie)
+            }
+        )
+        selectedFoodCalories = newSelectedFoodCalories
+        totalCalories = selectedFoodCalories.values.reduce(0, +)
+    }
+    
     
     // MARK: - Keyboard Handling
     @objc private func keyboardWillShow(notification: Notification) {
@@ -305,22 +318,19 @@ extension AddFoodController: FoodGalleryViewDelegate {
         imageSectionView.removeDetectionLabel(for: deletedFood.name)
         foodOptionView.clearSelection(for: deletedFood.name)
         
+        // 음식 이름으로 칼로리 삭제
+        selectedFoodCalories.removeValue(forKey: deletedFood.name)
+        
         foods.remove(at: index)
         foodGalleryView.configure(with: foods)
         
-        // 남은 음식들의 총 칼로리 계산
-        let remainingCalories = foods.reduce(0) { sum, food in
-            return sum + FoodCalorieManager.shared.getCalorie(for: food.name)
-        }
-        imageSectionView.configure(with: imageSectionView.imageView.image, calories: remainingCalories)
+        // 총 칼로리 업데이트
+        totalCalories = selectedFoodCalories.values.reduce(0, +)
         
         if let selectedIndex = foodGalleryView.selectedFoodIndex,
            selectedIndex == index {
             isShowingOptions = false
         }
-        
-        selectedFoodCalories.removeValue(forKey: index)
-        totalCalories = selectedFoodCalories.values.reduce(0, +)
     }
     
     func foodGalleryView(_ view: FoodGalleryView, didSelectFoodAt index: Int) {
@@ -346,20 +356,20 @@ extension AddFoodController: FoodGalleryViewDelegate {
 // MARK: - FoodOptionViewDelegate
 extension AddFoodController: FoodOptionViewDelegate {
     func foodOptionView(_ view: FoodOptionView, didSelectAmount amount: Int, calories: Int) {
-        guard let selectedIndex = foodGalleryView.selectedFoodIndex else { return }
-        
-        // 선택된 음식 업데이트
-        var updatedFood = foods[selectedIndex]
-        updatedFood.selectedAmount = String(amount)
-        updatedFood.selectedCalorie = calories
-        foods[selectedIndex] = updatedFood
-        
-        // 선택된 음식의 칼로리 업데이트
-        selectedFoodCalories[selectedIndex] = calories
-        
-        // 전체 칼로리 다시 계산
-        totalCalories = selectedFoodCalories.values.reduce(0, +)
-    }
+            guard let selectedIndex = foodGalleryView.selectedFoodIndex else { return }
+            
+            // 선택된 음식 업데이트
+            var updatedFood = foods[selectedIndex]
+            updatedFood.selectedAmount = String(amount)
+            updatedFood.selectedCalorie = calories
+            foods[selectedIndex] = updatedFood
+            
+            // 선택된 음식의 칼로리 업데이트 - 이름을 키로 사용
+            selectedFoodCalories[updatedFood.name] = calories
+            
+            // 전체 칼로리 다시 계산
+            totalCalories = selectedFoodCalories.values.reduce(0, +)
+        }
 }
 
 // MARK: - MealTimeSelectionViewDelegate
@@ -394,29 +404,27 @@ extension AddFoodController: ShareOptionViewDelegate {
 // MARK: - DirectAddFoodDelegate
 extension AddFoodController: DirectAddFoodDelegate {
     func didAddNewFood(name: String, calorie: Int) {
-            let renderer = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 100))
-            let grayImage = renderer.image { context in
-                UIColor.lightGray.setFill()
-                context.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
-            }
-            
-            // 새로운 Food 생성 시 기본값 설정
-        let newFood = Food(
-            image: grayImage,
-            name: name,
-            type: .custom,
-            baseCalorie: calorie,
-            selectedAmount: "1인분",
-            selectedCalorie: calorie  // 초기값은 baseCalorie와 동일
-        )
-            foods.append(newFood)
-            
-            let newIndex = foods.count - 1
-            selectedFoodCalories[newIndex] = calorie
-            totalCalories = selectedFoodCalories.values.reduce(0, +)
-            
-            foodGalleryView.configure(with: foods)
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 100))
+        let grayImage = renderer.image { context in
+            UIColor.lightGray.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
         }
+        
+        let newFood = Food(
+                    image: grayImage,
+                    name: name,
+                    type: .custom,
+                    baseCalorie: calorie,
+                    selectedAmount: "1인분",
+                    selectedCalorie: calorie
+                )
+                
+                foods.append(newFood)
+                selectedFoodCalories[name] = calorie // 이름으로 칼로리 저장
+                
+                totalCalories = selectedFoodCalories.values.reduce(0, +)
+                foodGalleryView.configure(with: foods)
+            }
 }
 
 // MARK: - Image Processing
@@ -451,68 +459,60 @@ extension AddFoodController {
     }
     
     private func processDetections(for request: VNRequest, error: Error?, originalImage: UIImage) {
-       guard let observations = request.results as? [VNRecognizedObjectObservation] else { return }
-       
-       // 신뢰도가 높은 감지 결과만 필터링
-       let validDetections = observations.filter { $0.confidence >= 0.5 }
-       
-       // 중복 제거를 위한 Dictionary
-       var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
-       
-       // confidence가 가장 높은 것만 저장
-       for observation in validDetections {
-           guard let firstLabel = observation.labels.first?.identifier else { continue }
-           let foodName = firstLabel
-           
-           if let existingObs = uniqueDetections[foodName] {
-               if observation.confidence > existingObs.confidence {
-                   uniqueDetections[foodName] = observation
-               }
-           } else {
-               uniqueDetections[foodName] = observation
-           }
-       }
-       
-       // 총 칼로리 계산 (고유한 음식 각각에 대해)
-       let totalCalories = uniqueDetections.values.reduce(0) { sum, observation in
-           guard let label = observation.labels.first else { return sum }
-           return sum + FoodCalorieManager.shared.getCalorie(for: label.identifier)
-       }
-       
-       DispatchQueue.main.async { [weak self] in
-           guard let self = self else { return }
-           
-           // 이미지 설정과 레이아웃을 강제로 업데이트
-           self.imageSectionView.configure(with: originalImage, calories: totalCalories)
-           self.view.layoutIfNeeded()
-           
-           // 약간의 지연을 주어 레이아웃이 완전히 적용된 후 레이블 추가
-           DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-               // 라벨 업데이트
-               self.imageSectionView.updateDetections(Array(uniqueDetections.values))
-           }
-           
-           // Food 객체 생성 및 컬렉션뷰 업데이트
-           let detectedFoods = uniqueDetections.values.compactMap { observation -> Food? in
-               guard let label = observation.labels.first else { return nil }
-               let croppedImage = self.cropImage(originalImage, for: observation.boundingBox)
-               let foodType = self.getFoodType(from: label.identifier)
-               
-               let baseCalorie = FoodCalorieManager.shared.getCalorie(for: label.identifier)
-               
-               return Food(
-                   image: croppedImage,
-                   name: label.identifier,
-                   type: foodType,
-                   baseCalorie: baseCalorie,
-                   selectedAmount: "1인분",
-                   selectedCalorie: baseCalorie  // 초기값은 baseCalorie와 동일
-               )
-           }
-           
-           self.foods = detectedFoods
-           self.foodGalleryView.configure(with: detectedFoods)
-       }
+        guard let observations = request.results as? [VNRecognizedObjectObservation] else { return }
+        
+        let validDetections = observations.filter { $0.confidence >= 0.5 }
+        var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
+        
+        // confidence가 가장 높은 것만 저장
+        for observation in validDetections {
+            guard let firstLabel = observation.labels.first?.identifier else { continue }
+            let foodName = firstLabel
+            
+            if let existingObs = uniqueDetections[foodName] {
+                if observation.confidence > existingObs.confidence {
+                    uniqueDetections[foodName] = observation
+                }
+            } else {
+                uniqueDetections[foodName] = observation
+            }
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // Food 객체 생성
+            let detectedFoods = uniqueDetections.values.compactMap { observation -> Food? in
+                guard let label = observation.labels.first else { return nil }
+                let foodName = label.identifier  // 음식 이름
+                let croppedImage = self.cropImage(originalImage, for: observation.boundingBox)
+                let foodType = self.getFoodType(from: foodName)
+                
+                let baseCalorie = FoodCalorieManager.shared.getCalorie(for: foodName)
+                
+                // 음식 이름으로 칼로리 저장
+                self.selectedFoodCalories[foodName] = baseCalorie
+                
+                return Food(
+                    image: croppedImage,
+                    name: foodName,
+                    type: foodType,
+                    baseCalorie: baseCalorie,
+                    selectedAmount: "1인분",
+                    selectedCalorie: baseCalorie
+                )
+            }
+            
+            self.foods = detectedFoods
+            self.totalCalories = self.selectedFoodCalories.values.reduce(0, +)
+            
+            // UI 업데이트
+            self.imageSectionView.configure(with: originalImage, calories: self.totalCalories)
+            self.foodGalleryView.configure(with: self.foods)
+            
+            // 바운딩 박스 업데이트
+            self.imageSectionView.updateDetections(Array(uniqueDetections.values))
+        }
     }
     
     private func clearDetectionBoxes() {
