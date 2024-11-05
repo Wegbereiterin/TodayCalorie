@@ -11,25 +11,27 @@ import Vision
 class ImageSectionView: UIView {
     
     private var detectionLabels: [String: UILabel] = [:]  // 음식 라벨용
-    
     private var warningLabels: [UILabel] = []
+    private var boundingBoxViews: [UIView] = []
     
     private let imageContainer: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGray6
-        view.layer.cornerRadius = 15
-        view.clipsToBounds = true
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    let imageView: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFit
-        iv.clipsToBounds = true
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
-    }()
+            let view = UIView()
+        view.backgroundColor = .white
+            view.layer.cornerRadius = 15
+            view.clipsToBounds = true
+            view.translatesAutoresizingMaskIntoConstraints = false
+            return view
+        }()
+        
+        let imageView: UIImageView = {
+            let iv = UIImageView()
+            iv.contentMode = .scaleAspectFit
+            iv.backgroundColor = .clear // 배경색 추가해서 실제 영역 확인
+            iv.layer.cornerRadius = 15
+            iv.clipsToBounds = true
+            iv.translatesAutoresizingMaskIntoConstraints = false
+            return iv
+        }()
     
     private let calorieLabel: UILabel = {
         let label = UILabel()
@@ -55,21 +57,22 @@ class ImageSectionView: UIView {
         addSubview(calorieLabel)
         
         NSLayoutConstraint.activate([
-            imageContainer.topAnchor.constraint(equalTo: topAnchor),
-            imageContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
-            imageContainer.trailingAnchor.constraint(equalTo: trailingAnchor),
-            imageContainer.heightAnchor.constraint(equalTo: imageContainer.widthAnchor),
-            
-            imageView.topAnchor.constraint(equalTo: imageContainer.topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: imageContainer.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: imageContainer.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: imageContainer.bottomAnchor),
-            
-            calorieLabel.topAnchor.constraint(equalTo: imageContainer.bottomAnchor, constant: 16),
-            calorieLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            calorieLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            calorieLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
+                    imageContainer.topAnchor.constraint(equalTo: topAnchor),
+                    imageContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
+                    imageContainer.trailingAnchor.constraint(equalTo: trailingAnchor),
+                    imageContainer.heightAnchor.constraint(equalToConstant: 300), // 고정 크기로 변경
+                    
+                    // 이미지뷰도 고정된 크기로 설정하고 중앙 정렬
+                    imageView.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor),
+                    imageView.centerYAnchor.constraint(equalTo: imageContainer.centerYAnchor),
+                    imageView.widthAnchor.constraint(equalToConstant: 300),  // 고정 너비
+                    imageView.heightAnchor.constraint(equalToConstant: 300), // 고정 높이
+                    
+                    calorieLabel.topAnchor.constraint(equalTo: imageContainer.bottomAnchor, constant: 16),
+                    calorieLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+                    calorieLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+                    calorieLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+                ])
     }
     
     func configure(with image: UIImage?, calories: Int) {
@@ -77,104 +80,112 @@ class ImageSectionView: UIView {
         calorieLabel.text = "총 섭취 칼로리: \(calories) Kcal"
     }
     
-    func getImageFrame() -> CGRect {
+    private func calculateImageRect() -> CGRect {
         guard let image = imageView.image else { return .zero }
         
-        // 이미지뷰의 bounds가 0이면 layoutIfNeeded() 호출
-        if imageView.bounds.width == 0 || imageView.bounds.height == 0 {
-            self.layoutIfNeeded()
-        }
+        let viewSize = imageView.bounds.size
+        let imageSize = image.size
         
-        // 실제 이미지뷰의 프레임
-        let viewBounds = imageView.bounds
-        print("ImageView bounds: \(viewBounds)") // 디버깅용
+        // AspectFit 계산
+        let scaleWidth = viewSize.width / imageSize.width
+        let scaleHeight = viewSize.height / imageSize.height
+        let scale = min(scaleWidth, scaleHeight)
         
-        // 이미지와 이미지뷰의 비율 계산
-        let imageRatio = image.size.width / image.size.height
-        let viewRatio = viewBounds.width / viewBounds.height
+        let scaledWidth = imageSize.width * scale
+        let scaledHeight = imageSize.height * scale
         
-        var drawingRect = CGRect.zero
+        let offsetX = (viewSize.width - scaledWidth) / 2
+        let offsetY = (viewSize.height - scaledHeight) / 2
         
-        if imageRatio > viewRatio {
-            // 이미지가 더 넓은 경우
-            let width = viewBounds.width
-            let height = width / imageRatio
-            let y = (viewBounds.height - height) / 2
-            drawingRect = CGRect(x: 0, y: y, width: width, height: height)
-        } else {
-            // 이미지가 더 높은 경우
-            let height = viewBounds.height
-            let width = height * imageRatio
-            let x = (viewBounds.width - width) / 2
-            drawingRect = CGRect(x: x, y: 0, width: width, height: height)
-        }
-        
-        return drawingRect
+        return CGRect(x: offsetX, y: offsetY, width: scaledWidth, height: scaledHeight)
     }
     
+    func getImageFrame() -> CGRect {
+            guard let image = imageView.image else { return .zero }
+            
+            let imageViewSize = imageView.frame.size
+            let imageSize = image.size
+            
+            // 이미지와 이미지뷰의 비율 계산
+            let imageAspect = imageSize.width / imageSize.height
+            let imageViewAspect = imageViewSize.width / imageViewSize.height
+            
+            var drawingRect: CGRect = .zero
+            
+            if imageAspect > imageViewAspect {
+                // 이미지가 더 넓은 경우
+                let scaledHeight = imageViewSize.width / imageAspect
+                let y = (imageViewSize.height - scaledHeight) / 2
+                drawingRect = CGRect(x: 0, y: y, width: imageViewSize.width, height: scaledHeight)
+            } else {
+                // 이미지가 더 높은 경우
+                let scaledWidth = imageViewSize.height * imageAspect
+                let x = (imageViewSize.width - scaledWidth) / 2
+                drawingRect = CGRect(x: x, y: 0, width: scaledWidth, height: imageViewSize.height)
+            }
+            
+            return drawingRect
+        }
+    
     func addDetectionLabel(for observation: VNRecognizedObjectObservation, foodName: String) {
-        print("Adding label for food: \(foodName)")
-        
-        self.layoutIfNeeded()
-        
         let labelView = UILabel()
         labelView.backgroundColor = .main.withAlphaComponent(0.7)
         labelView.textColor = .white
         labelView.font = .systemFont(ofSize: 18, weight: .bold)
         labelView.text = " \(foodName) \(Int(observation.confidence * 100))% "
+        labelView.textAlignment = .center
         labelView.layer.cornerRadius = 8
         labelView.clipsToBounds = true
         
         imageView.addSubview(labelView)
         labelView.sizeToFit()
         
-        let imageFrame = getImageFrame()
-        print("Image frame: \(imageFrame)")
-        
-        guard imageFrame.width > 0, imageFrame.height > 0 else {
-            print("Invalid image frame")
-            return
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            print("\nDEBUG: ===== 라벨 위치 계산 =====")
+            print("DEBUG: Vision boundingBox: \(observation.boundingBox)")
+            
+            // 바운딩 박스와 동일한 방식으로 중심점 계산
+            let centerX = observation.boundingBox.midX * 300
+            let centerY = (1 - observation.boundingBox.midY) * 300
+            
+            print("DEBUG: 계산된 중심점: (\(centerX), \(centerY))")
+            
+            labelView.center = CGPoint(x: centerX, y: centerY)
         }
-        
-        // 객체의 중심점 계산
-        let centerX = imageFrame.origin.x + (observation.boundingBox.midX * imageFrame.width)
-        let centerY = imageFrame.origin.y + ((1 - observation.boundingBox.midY) * imageFrame.height)
-        
-        // 레이블을 객체의 중심에 배치 (레이블의 크기를 고려하여 조정)
-        let x = centerX - (labelView.bounds.width / 2)
-        let y = centerY - (labelView.bounds.height / 2)
-        
-        print("Label position: x: \(x), y: \(y)")
-        
-        labelView.frame.origin = CGPoint(x: x, y: y)
         
         detectionLabels[foodName] = labelView
     }
     
     func updateDetections(_ observations: [VNRecognizedObjectObservation]) {
-        clearDetectionLabels()
-        
-        // confidence가 가장 높은 것만 저장
-        var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
-        
-        for observation in observations {
-            guard let label = observation.labels.first else { continue }
-            let foodName = label.identifier
+            // 기존 라벨과 바운딩 박스 제거
+            clearDetectionLabels()
             
-            if let existingObs = uniqueDetections[foodName] {
-                if observation.confidence > existingObs.confidence {
+            // confidence가 가장 높은 것만 저장
+            var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
+            
+            for observation in observations {
+                guard let label = observation.labels.first else { continue }
+                let foodName = label.identifier
+                
+                if let existingObs = uniqueDetections[foodName] {
+                    if observation.confidence > existingObs.confidence {
+                        uniqueDetections[foodName] = observation
+                    }
+                } else {
                     uniqueDetections[foodName] = observation
                 }
-            } else {
-                uniqueDetections[foodName] = observation
             }
+            
+            // 바운딩 박스를 먼저 추가하고, 그 다음 라벨 추가
+            for (foodName, observation) in uniqueDetections {
+                addDetectionLabel(for: observation, foodName: foodName)
+            }
+            
+            // 레이아웃 업데이트 강제
+            layoutIfNeeded()
         }
-        
-        // 각 고유한 음식에 대해 라벨 추가
-        for (foodName, observation) in uniqueDetections {
-            addDetectionLabel(for: observation, foodName: foodName)
-        }
-    }
     
     func clearDetectionLabels() {
         detectionLabels.values.forEach { $0.removeFromSuperview() }
@@ -186,43 +197,35 @@ class ImageSectionView: UIView {
         detectionLabels.removeValue(forKey: foodName)
     }
     
-    private func createWarningLabel() -> UILabel {
-        let label = UILabel()
-        label.text = "⚠️"
-        label.font = .systemFont(ofSize: 24)  // 경고 이모지 크기 조정
-        label.backgroundColor = .clear
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }
-    
     func addWarningLabel(for observation: VNRecognizedObjectObservation) {
-        let label = UILabel()
-        //            label.backgroundColor = .main.withAlphaComponent(0.7)
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 18, weight: .bold)
-        label.text = " ⚠️ "
-        label.layer.cornerRadius = 8
-        label.clipsToBounds = true
-        
-        imageView.addSubview(label)
-        label.sizeToFit()
-        
-        let centerX = observation.boundingBox.midX * imageView.bounds.width
-        let centerY = (1 - observation.boundingBox.midY) * imageView.bounds.height
-        
-        let x = centerX - (label.bounds.width / 2)
-        let y = centerY - (label.bounds.height / 2)
-        
-        label.frame.origin = CGPoint(x: x, y: y)
-        
-        warningLabels.append(label)
-    }
-    
+            let label = UILabel()
+            label.text = "⚠️"
+            label.font = .systemFont(ofSize: 24)
+            label.textAlignment = .center
+            
+            imageView.addSubview(label)
+            label.sizeToFit()
+            
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                
+                let imageRect = self.calculateImageRect()
+                
+                // Vision 좌표를 UIKit 좌표로 변환
+                let centerX = observation.boundingBox.midX * imageRect.width + imageRect.minX
+                let centerY = (1 - observation.boundingBox.midY) * imageRect.height + imageRect.minY
+                
+                label.center = CGPoint(x: centerX, y: centerY)
+            }
+            
+            warningLabels.append(label)
+        }
+
     func updateWarningLabels(_ observations: [VNRecognizedObjectObservation]) {
         clearWarningLabels()
         observations.forEach { addWarningLabel(for: $0) }
     }
-    
+
     func clearWarningLabels() {
         warningLabels.forEach { $0.removeFromSuperview() }
         warningLabels.removeAll()

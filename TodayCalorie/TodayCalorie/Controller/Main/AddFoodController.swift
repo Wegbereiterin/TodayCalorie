@@ -427,7 +427,6 @@ extension AddFoodController: DirectAddFoodDelegate {
             }
 }
 
-// MARK: - Image Processing
 extension AddFoodController {
     func processSelectedImage(_ image: UIImage) {
         // 이미지 설정
@@ -435,27 +434,6 @@ extension AddFoodController {
         
         // 음식과 부적절한 콘텐츠 감지 시작
         processImage(image)
-    }
-    
-    private func detectFoods(in image: UIImage) {
-        guard let cgImage = image.cgImage else { return }
-        
-        do {
-            let config = MLModelConfiguration()
-            let model = try best_2(configuration: config).model
-            let visionModel = try VNCoreMLModel(for: model)
-            
-            let request = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
-                self?.processDetections(for: request, error: error, originalImage: image)
-            }
-            request.imageCropAndScaleOption = .scaleFit
-            
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            try handler.perform([request])
-            
-        } catch {
-            print("Detection error:", error)
-        }
     }
     
     private func processDetections(for request: VNRequest, error: Error?, originalImage: UIImage) {
@@ -484,13 +462,15 @@ extension AddFoodController {
             // Food 객체 생성
             let detectedFoods = uniqueDetections.values.compactMap { observation -> Food? in
                 guard let label = observation.labels.first else { return nil }
-                let foodName = label.identifier  // 음식 이름
-                let croppedImage = self.cropImage(originalImage, for: observation.boundingBox)
+                let foodName = label.identifier
+                
+                // 정확한 이미지 크롭을 위해 좌표 변환
+                let normalizedRect = self.normalizedRect(for: observation.boundingBox,
+                                                       originalImage: originalImage)
+                let croppedImage = self.cropImage(originalImage, for: normalizedRect)
                 let foodType = self.getFoodType(from: foodName)
                 
                 let baseCalorie = FoodCalorieManager.shared.getCalorie(for: foodName)
-                
-                // 음식 이름으로 칼로리 저장
                 self.selectedFoodCalories[foodName] = baseCalorie
                 
                 return Food(
@@ -515,27 +495,33 @@ extension AddFoodController {
         }
     }
     
-    private func clearDetectionBoxes() {
-        detectionBoxes.forEach { $0.removeFromSuperview() }
-        detectionBoxes.removeAll()
+    private func normalizedRect(for boundingBox: CGRect, originalImage: UIImage) -> CGRect {
+        // Vision 프레임워크의 좌표계(왼쪽 하단 원점)를
+        // UIKit 좌표계(왼쪽 상단 원점)로 변환
+        let x = boundingBox.minX
+        let y = 1 - boundingBox.maxY  // y 좌표 변환
+        let width = boundingBox.width
+        let height = boundingBox.height
+        
+        return CGRect(x: x, y: y, width: width, height: height)
     }
     
-    private func cropImage(_ image: UIImage, for boundingBox: CGRect) -> UIImage {
+    private func cropImage(_ image: UIImage, for normalizedRect: CGRect) -> UIImage {
         let imageSize = image.size
-        let x = boundingBox.minX * imageSize.width
-        let y = (1 - boundingBox.maxY) * imageSize.height
-        let width = boundingBox.width * imageSize.width
-        let height = boundingBox.height * imageSize.height
+        
+        // 정규화된 좌표를 실제 이미지 픽셀 좌표로 변환
+        let x = normalizedRect.minX * imageSize.width
+        let y = normalizedRect.minY * imageSize.height
+        let width = normalizedRect.width * imageSize.width
+        let height = normalizedRect.height * imageSize.height
         
         let cropRect = CGRect(x: x, y: y, width: width, height: height)
         
         if let cgImage = image.cgImage,
            let croppedCGImage = cgImage.cropping(to: cropRect) {
-            let croppedImage = UIImage(cgImage: croppedCGImage)
-            return croppedImage
+            return UIImage(cgImage: croppedCGImage)
         }
         
-        // 크롭 실패시 원본 이미지의 해당 부분을 그대로 사용
         return image
     }
     
@@ -547,6 +533,27 @@ extension AddFoodController {
         case "pasta": return .pasta
             // 다른 케이스들 추가...
         default: return .custom
+        }
+    }
+    
+    private func detectFoods(in image: UIImage) {
+        guard let cgImage = image.cgImage else { return }
+        
+        do {
+            let config = MLModelConfiguration()
+            let model = try best_2(configuration: config).model
+            let visionModel = try VNCoreMLModel(for: model)
+            
+            let request = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
+                self?.processDetections(for: request, error: error, originalImage: image)
+            }
+            request.imageCropAndScaleOption = .scaleFit
+            
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            try handler.perform([request])
+            
+        } catch {
+            print("Detection error:", error)
         }
     }
 }
