@@ -20,6 +20,9 @@ enum FruitType: String {
     case orange = "Orange"
     case pineapple = "Pineapple"
     case watermelon = "Watermelon"
+    case rice = "rice"
+    case kimchi = "kimchi"
+    case kimchiStew = "kimchijjigae"
     case custom = "Custom"
     
     var baseInfo: (gramPerUnit: Int, caloriePerUnit: Int) {
@@ -36,6 +39,12 @@ enum FruitType: String {
             return (165, 83)   // 1조각 기준
         case .watermelon:
             return (286, 86)   // 1조각 기준
+        case .rice:
+            return (200, 300)  // 1공기 기준
+        case .kimchi:
+            return (100, 25)   // 1접시 기준
+        case .kimchiStew:
+            return (300, 150)  // 1그릇 기준
         case .custom:
             return (0, 0)      // custom은 별도 처리
         }
@@ -92,6 +101,32 @@ enum FruitType: String {
                 FoodPortionOption(amount: "2조각", gram: gramPerUnit*2, calorie: caloriePerUnit*2),
                 FoodPortionOption(amount: "3조각", gram: gramPerUnit*3, calorie: caloriePerUnit*3),
                 FoodPortionOption(amount: "4조각", gram: gramPerUnit*4, calorie: caloriePerUnit*4)
+            ]
+            
+        case .rice:
+            return [
+                FoodPortionOption(amount: "1/4공기", gram: gramPerUnit/4, calorie: caloriePerUnit/4),
+                FoodPortionOption(amount: "1/2공기", gram: gramPerUnit/2, calorie: caloriePerUnit/2),
+                FoodPortionOption(amount: "1공기", gram: gramPerUnit, calorie: caloriePerUnit),
+                FoodPortionOption(amount: "1.5공기", gram: Int(Double(gramPerUnit)*1.5), calorie: Int(Double(caloriePerUnit)*1.5)),
+                FoodPortionOption(amount: "2공기", gram: gramPerUnit*2, calorie: caloriePerUnit*2)
+            ]
+            
+        case .kimchi:
+            return [
+                FoodPortionOption(amount: "1/2접시", gram: gramPerUnit/2, calorie: caloriePerUnit/2),
+                FoodPortionOption(amount: "1접시", gram: gramPerUnit, calorie: caloriePerUnit),
+                FoodPortionOption(amount: "2접시", gram: gramPerUnit*2, calorie: caloriePerUnit*2),
+                FoodPortionOption(amount: "3접시", gram: gramPerUnit*3, calorie: caloriePerUnit*3),
+                FoodPortionOption(amount: "4접시", gram: gramPerUnit*4, calorie: caloriePerUnit*4)
+            ]
+            
+        case .kimchiStew:
+            return [
+                FoodPortionOption(amount: "1/2그릇", gram: gramPerUnit/2, calorie: caloriePerUnit/2),
+                FoodPortionOption(amount: "1그릇", gram: gramPerUnit, calorie: caloriePerUnit),
+                FoodPortionOption(amount: "1.5그릇", gram: Int(Double(gramPerUnit)*1.5), calorie: Int(Double(caloriePerUnit)*1.5)),
+                FoodPortionOption(amount: "2그릇", gram: gramPerUnit*2, calorie: caloriePerUnit*2)
             ]
             
         case .custom:

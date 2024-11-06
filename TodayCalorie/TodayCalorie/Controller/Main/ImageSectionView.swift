@@ -158,34 +158,92 @@ class ImageSectionView: UIView {
         detectionLabels[foodName] = labelView
     }
     
-    func updateDetections(_ observations: [VNRecognizedObjectObservation]) {
-            // 기존 라벨과 바운딩 박스 제거
-            clearDetectionLabels()
+//    func updateDetections(_ observations: [VNRecognizedObjectObservation]) {
+//            // 기존 라벨과 바운딩 박스 제거
+//            clearDetectionLabels()
+//            
+//            // confidence가 가장 높은 것만 저장
+//            var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
+//            
+//            for observation in observations {
+//                guard let label = observation.labels.first else { continue }
+//                let foodName = label.identifier
+//                
+//                if let existingObs = uniqueDetections[foodName] {
+//                    if observation.confidence > existingObs.confidence {
+//                        uniqueDetections[foodName] = observation
+//                    }
+//                } else {
+//                    uniqueDetections[foodName] = observation
+//                }
+//            }
+//            
+//            // 바운딩 박스를 먼저 추가하고, 그 다음 라벨 추가
+//            for (foodName, observation) in uniqueDetections {
+//                addDetectionLabel(for: observation, foodName: foodName)
+//            }
+//            
+//            // 레이아웃 업데이트 강제
+//            layoutIfNeeded()
+//        }
+    
+//    func updateDetections(_ detections: [FoodDetection]) {
+//            clearDetectionLabels()
+//            
+//            for detection in detections {
+//                let labelView = UILabel()
+//                labelView.backgroundColor = .main.withAlphaComponent(0.7)
+//                labelView.textColor = .white
+//                labelView.font = .systemFont(ofSize: 18, weight: .bold)
+//                labelView.text = " \(detection.label) \(Int(detection.confidence * 100))% "
+//                labelView.textAlignment = .center
+//                labelView.layer.cornerRadius = 8
+//                labelView.clipsToBounds = true
+//                
+//                imageView.addSubview(labelView)
+//                labelView.sizeToFit()
+//                
+//                DispatchQueue.main.async {
+//                    let centerX = detection.boundingBox.midX * 300
+//                    let centerY = (1 - detection.boundingBox.midY) * 300
+//                    labelView.center = CGPoint(x: centerX, y: centerY)
+//                }
+//                
+//                detectionLabels[detection.label] = labelView
+//            }
+//            
+//            layoutIfNeeded()
+//        }
+    
+    func updateDetections(_ detections: [FoodDetection]) {
+        clearDetectionLabels()
+        
+        for detection in detections {
+            let labelView = UILabel()
+            labelView.backgroundColor = .main.withAlphaComponent(0.7)
+            labelView.textColor = .white
+            labelView.font = .systemFont(ofSize: 18, weight: .bold)
+            // 여기서 한글 이름으로 변환
+            let koreanName = FoodNameMapper.toKorean(detection.label)
+            labelView.text = " \(koreanName) \(Int(detection.confidence * 100))% "
+            labelView.textAlignment = .center
+            labelView.layer.cornerRadius = 8
+            labelView.clipsToBounds = true
             
-            // confidence가 가장 높은 것만 저장
-            var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
+            imageView.addSubview(labelView)
+            labelView.sizeToFit()
             
-            for observation in observations {
-                guard let label = observation.labels.first else { continue }
-                let foodName = label.identifier
-                
-                if let existingObs = uniqueDetections[foodName] {
-                    if observation.confidence > existingObs.confidence {
-                        uniqueDetections[foodName] = observation
-                    }
-                } else {
-                    uniqueDetections[foodName] = observation
-                }
+            DispatchQueue.main.async {
+                let centerX = detection.boundingBox.midX * 300
+                let centerY = (1 - detection.boundingBox.midY) * 300
+                labelView.center = CGPoint(x: centerX, y: centerY)
             }
             
-            // 바운딩 박스를 먼저 추가하고, 그 다음 라벨 추가
-            for (foodName, observation) in uniqueDetections {
-                addDetectionLabel(for: observation, foodName: foodName)
-            }
-            
-            // 레이아웃 업데이트 강제
-            layoutIfNeeded()
+            detectionLabels[detection.label] = labelView
         }
+        
+        layoutIfNeeded()
+    }
     
     func clearDetectionLabels() {
         detectionLabels.values.forEach { $0.removeFromSuperview() }

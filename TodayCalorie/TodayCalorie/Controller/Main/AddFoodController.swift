@@ -239,7 +239,7 @@ class AddFoodController: UIViewController {
         guard error == nil,
               let observations = request.results as? [VNRecognizedObjectObservation] else { return }
         
-        let validDetections = observations.filter { $0.confidence >= 0.6 }
+        let validDetections = observations.filter { $0.confidence >= 0.7 }
         
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
@@ -436,63 +436,149 @@ extension AddFoodController {
         processImage(image)
     }
     
+//    private func processDetections(for request: VNRequest, error: Error?, originalImage: UIImage) {
+//        guard let observations = request.results as? [VNRecognizedObjectObservation] else { return }
+//        
+//        let validDetections = observations.filter { $0.confidence >= 0.5 }
+//        var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
+//        
+//        // confidence가 가장 높은 것만 저장
+//        for observation in validDetections {
+//            guard let firstLabel = observation.labels.first?.identifier else { continue }
+//            let foodName = firstLabel
+//            
+//            if let existingObs = uniqueDetections[foodName] {
+//                if observation.confidence > existingObs.confidence {
+//                    uniqueDetections[foodName] = observation
+//                }
+//            } else {
+//                uniqueDetections[foodName] = observation
+//            }
+//        }
+//        
+//        DispatchQueue.main.async { [weak self] in
+//            guard let self = self else { return }
+//            
+//            // Food 객체 생성
+//            let detectedFoods = uniqueDetections.values.compactMap { observation -> Food? in
+//                guard let label = observation.labels.first else { return nil }
+//                let foodName = label.identifier
+//                
+//                // 정확한 이미지 크롭을 위해 좌표 변환
+//                let normalizedRect = self.normalizedRect(for: observation.boundingBox,
+//                                                       originalImage: originalImage)
+//                let croppedImage = self.cropImage(originalImage, for: normalizedRect)
+//                let foodType = self.getFoodType(from: foodName)
+//                
+//                let baseCalorie = FoodCalorieManager.shared.getCalorie(for: foodName)
+//                self.selectedFoodCalories[foodName] = baseCalorie
+//                
+//                return Food(
+//                    image: croppedImage,
+//                    name: foodName,
+//                    type: foodType,
+//                    baseCalorie: baseCalorie,
+//                    selectedAmount: "1인분",
+//                    selectedCalorie: baseCalorie
+//                )
+//            }
+//            
+//            self.foods = detectedFoods
+//            self.totalCalories = self.selectedFoodCalories.values.reduce(0, +)
+//            
+//            // UI 업데이트
+//            self.imageSectionView.configure(with: originalImage, calories: self.totalCalories)
+//            self.foodGalleryView.configure(with: self.foods)
+//            
+//            // 바운딩 박스 업데이트
+//            self.imageSectionView.updateDetections(Array(uniqueDetections.values))
+//        }
+//    }
+    
     private func processDetections(for request: VNRequest, error: Error?, originalImage: UIImage) {
-        guard let observations = request.results as? [VNRecognizedObjectObservation] else { return }
-        
-        let validDetections = observations.filter { $0.confidence >= 0.5 }
-        var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
-        
-        // confidence가 가장 높은 것만 저장
-        for observation in validDetections {
-            guard let firstLabel = observation.labels.first?.identifier else { continue }
-            let foodName = firstLabel
-            
-            if let existingObs = uniqueDetections[foodName] {
-                if observation.confidence > existingObs.confidence {
-                    uniqueDetections[foodName] = observation
-                }
-            } else {
-                uniqueDetections[foodName] = observation
-            }
-        }
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            // Food 객체 생성
-            let detectedFoods = uniqueDetections.values.compactMap { observation -> Food? in
-                guard let label = observation.labels.first else { return nil }
-                let foodName = label.identifier
-                
-                // 정확한 이미지 크롭을 위해 좌표 변환
-                let normalizedRect = self.normalizedRect(for: observation.boundingBox,
-                                                       originalImage: originalImage)
-                let croppedImage = self.cropImage(originalImage, for: normalizedRect)
-                let foodType = self.getFoodType(from: foodName)
-                
-                let baseCalorie = FoodCalorieManager.shared.getCalorie(for: foodName)
-                self.selectedFoodCalories[foodName] = baseCalorie
-                
-                return Food(
-                    image: croppedImage,
-                    name: foodName,
-                    type: foodType,
-                    baseCalorie: baseCalorie,
-                    selectedAmount: "1인분",
-                    selectedCalorie: baseCalorie
-                )
-            }
-            
-            self.foods = detectedFoods
-            self.totalCalories = self.selectedFoodCalories.values.reduce(0, +)
-            
-            // UI 업데이트
-            self.imageSectionView.configure(with: originalImage, calories: self.totalCalories)
-            self.foodGalleryView.configure(with: self.foods)
-            
-            // 바운딩 박스 업데이트
-            self.imageSectionView.updateDetections(Array(uniqueDetections.values))
-        }
+       guard let observations = request.results as? [VNRecognizedObjectObservation] else { return }
+       
+       let validDetections = observations.filter { observation -> Bool in
+           guard let label = observation.labels.first?.identifier else { return false }
+           
+           // 김치, 김치찌개, 쌀밥은 85% 이상일 때만 감지
+           if ["김치", "김치찌개", "쌀밥"].contains(label) {
+               return observation.confidence >= 0.85
+           }
+           // 나머지는 기존대로 50% 이상
+           return observation.confidence >= 0.5
+       }
+       
+       var uniqueDetections: [String: VNRecognizedObjectObservation] = [:]
+       
+       // confidence가 가장 높은 것만 저장하면서 즉시 칼로리 계산
+       for observation in validDetections {
+           guard let firstLabel = observation.labels.first?.identifier else { continue }
+           let foodName = firstLabel
+           
+           if let existingObs = uniqueDetections[foodName] {
+               if observation.confidence > existingObs.confidence {
+                   uniqueDetections[foodName] = observation
+                   // 기존 음식의 칼로리 업데이트
+                   let baseCalorie = FoodCalorieManager.shared.getCalorie(for: foodName)
+                   selectedFoodCalories[foodName] = baseCalorie
+               }
+           } else {
+               uniqueDetections[foodName] = observation
+               // 새로운 음식이 감지될 때 즉시 칼로리 추가
+               let baseCalorie = FoodCalorieManager.shared.getCalorie(for: foodName)
+               selectedFoodCalories[foodName] = baseCalorie
+           }
+       }
+       
+       // 총 칼로리 즉시 계산
+       totalCalories = selectedFoodCalories.values.reduce(0, +)
+       
+       DispatchQueue.main.async { [weak self] in
+           guard let self = self else { return }
+           
+           // UI 업데이트를 먼저 수행
+           self.imageSectionView.configure(with: originalImage, calories: self.totalCalories)
+           
+           // 나머지 Food 객체 생성 및 UI 업데이트
+           let detectedFoods = uniqueDetections.values.compactMap { observation -> Food? in
+               guard let label = observation.labels.first else { return nil }
+               let foodName = label.identifier
+               
+               let normalizedRect = self.normalizedRect(for: observation.boundingBox,
+                                                      originalImage: originalImage)
+               let croppedImage = self.cropImage(originalImage, for: normalizedRect)
+               let foodType = self.getFoodType(from: foodName)
+               
+               let baseCalorie = FoodCalorieManager.shared.getCalorie(for: foodName)
+               
+               return Food(
+                   image: croppedImage,
+                   name: foodName,
+                   type: foodType,
+                   baseCalorie: baseCalorie,
+                   selectedAmount: "1인분",
+                   selectedCalorie: baseCalorie
+               )
+           }
+           
+           self.foods = detectedFoods
+           self.foodGalleryView.configure(with: self.foods)
+           
+           // VNRecognizedObjectObservation을 FoodDetection으로 변환
+           let foodDetections = uniqueDetections.values.map { observation -> FoodDetection in
+               let label = observation.labels.first?.identifier ?? ""
+               return FoodDetection(
+                   label: label,
+                   confidence: observation.confidence,
+                   boundingBox: observation.boundingBox,
+                   modelType: .general
+               )
+           }
+           
+           // 바운딩 박스 업데이트
+           self.imageSectionView.updateDetections(foodDetections)
+       }
     }
     
     private func normalizedRect(for boundingBox: CGRect, originalImage: UIImage) -> CGRect {
@@ -536,26 +622,63 @@ extension AddFoodController {
         }
     }
     
+//    private func detectFoods(in image: UIImage) {
+//        guard let cgImage = image.cgImage else { return }
+//        
+//        do {
+//            let config = MLModelConfiguration()
+//            let model = try best_2(configuration: config).model
+//            let visionModel = try VNCoreMLModel(for: model)
+//            
+//            let request = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
+//                self?.processDetections(for: request, error: error, originalImage: image)
+//            }
+//            request.imageCropAndScaleOption = .scaleFit
+//            
+//            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+//            try handler.perform([request])
+//            
+//        } catch {
+//            print("Detection error:", error)
+//        }
+//    }
+    
     private func detectFoods(in image: UIImage) {
-        guard let cgImage = image.cgImage else { return }
-        
-        do {
-            let config = MLModelConfiguration()
-            let model = try best_2(configuration: config).model
-            let visionModel = try VNCoreMLModel(for: model)
-            
-            let request = VNCoreMLRequest(model: visionModel) { [weak self] request, error in
-                self?.processDetections(for: request, error: error, originalImage: image)
+            FoodDetectionManager.shared.detectFood(in: image) { [weak self] detections in
+                guard let self = self else { return }
+                
+                // Food 객체 생성
+                let detectedFoods = detections.compactMap { detection -> Food? in
+                    // 정확한 이미지 크롭을 위해 좌표 변환
+                    let normalizedRect = self.normalizedRect(for: detection.boundingBox,
+                                                           originalImage: image)
+                    let croppedImage = self.cropImage(image, for: normalizedRect)
+                    let foodType = self.getFoodType(from: detection.label)
+                    
+                    let baseCalorie = FoodCalorieManager.shared.getCalorie(for: detection.label)
+                    self.selectedFoodCalories[detection.label] = baseCalorie
+                    
+                    return Food(
+                        image: croppedImage,
+                        name: detection.label,
+                        type: foodType,
+                        baseCalorie: baseCalorie,
+                        selectedAmount: "1인분",
+                        selectedCalorie: baseCalorie
+                    )
+                }
+                
+                self.foods = detectedFoods
+                self.totalCalories = self.selectedFoodCalories.values.reduce(0, +)
+                
+                // UI 업데이트
+                self.imageSectionView.configure(with: image, calories: self.totalCalories)
+                self.foodGalleryView.configure(with: self.foods)
+                
+                // 바운딩 박스와 라벨 업데이트
+                self.imageSectionView.updateDetections(detections)
             }
-            request.imageCropAndScaleOption = .scaleFit
-            
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            try handler.perform([request])
-            
-        } catch {
-            print("Detection error:", error)
         }
-    }
 }
 
 extension AddFoodController: AddButtonViewDelegate {

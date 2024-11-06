@@ -76,6 +76,22 @@ extension FoodGalleryView: UICollectionViewDelegate, UICollectionViewDataSource 
         return foods.count + 1
     }
     
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        if indexPath.item == foods.count {
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AddCell.identifier, for: indexPath) as! AddCell
+//            return cell
+//        } else {
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FoodCell.identifier, for: indexPath) as! FoodCell
+//            let food = foods[indexPath.item]
+//            cell.configure(with: food.image, name: food.name)  // Food 구조체의 프로퍼티 사용
+//            cell.deleteAction = { [weak self] in
+//                self?.delegate?.foodGalleryView(self!, didDeleteFoodAt: indexPath.item)
+//            }
+//            cell.isSelectedCell = selectedFoodIndex == indexPath.item
+//            return cell
+//        }
+//    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == foods.count {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AddCell.identifier, for: indexPath) as! AddCell
@@ -83,7 +99,9 @@ extension FoodGalleryView: UICollectionViewDelegate, UICollectionViewDataSource 
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FoodCell.identifier, for: indexPath) as! FoodCell
             let food = foods[indexPath.item]
-            cell.configure(with: food.image, name: food.name)  // Food 구조체의 프로퍼티 사용
+            // 여기서 한글 이름으로 변환
+            let koreanName = FoodNameMapper.toKorean(food.name)
+            cell.configure(with: food.image, name: koreanName)
             cell.deleteAction = { [weak self] in
                 self?.delegate?.foodGalleryView(self!, didDeleteFoodAt: indexPath.item)
             }

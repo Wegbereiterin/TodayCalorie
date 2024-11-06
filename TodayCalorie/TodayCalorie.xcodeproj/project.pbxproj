@@ -44,6 +44,10 @@
 		6153E7A72CD8D6B400367CFA /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7A62CD8D6B400367CFA /* LaunchScreenView.swift */; };
 		6153E7A92CD8E44E00367CFA /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7A82CD8E44E00367CFA /* Comment.swift */; };
 		6153E7AB2CD8F09D00367CFA /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7AA2CD8F09D00367CFA /* ImageCache.swift */; };
+		6153E7AF2CDA7BE000367CFA /* kimchi_detector.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7AE2CDA7BE000367CFA /* kimchi_detector.mlpackage */; };
+		6153E7B12CDA7D1200367CFA /* FoodDetectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7B02CDA7D1200367CFA /* FoodDetectionManager.swift */; };
+		6153E7B32CDA830500367CFA /* kimchi_stew_detector.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7B22CDA830500367CFA /* kimchi_stew_detector.mlpackage */; };
+		6153E7B52CDA832A00367CFA /* rice_detector.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 6153E7B42CDA832A00367CFA /* rice_detector.mlpackage */; };
 		618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335B2CAEDD87009D071B /* AppDelegate.swift */; };
 		618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335D2CAEDD87009D071B /* SceneDelegate.swift */; };
 		618F33602CAEDD87009D071B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618F335F2CAEDD87009D071B /* ViewController.swift */; };
@@ -103,6 +107,10 @@
 		6153E7A62CD8D6B400367CFA /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
 		6153E7A82CD8E44E00367CFA /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		6153E7AA2CD8F09D00367CFA /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		6153E7AE2CDA7BE000367CFA /* kimchi_detector.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = kimchi_detector.mlpackage; sourceTree = "<group>"; };
+		6153E7B02CDA7D1200367CFA /* FoodDetectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodDetectionManager.swift; sourceTree = "<group>"; };
+		6153E7B22CDA830500367CFA /* kimchi_stew_detector.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = kimchi_stew_detector.mlpackage; sourceTree = "<group>"; };
+		6153E7B42CDA832A00367CFA /* rice_detector.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = rice_detector.mlpackage; sourceTree = "<group>"; };
 		618F33582CAEDD87009D071B /* TodayCalorie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodayCalorie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		618F335B2CAEDD87009D071B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		618F335D2CAEDD87009D071B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -143,6 +151,7 @@
 				61E53E3A2CCFFD7A00E8DBB1 /* UserService.swift */,
 				61E53E3E2CD0042000E8DBB1 /* AuthService.swift */,
 				6153E79C2CD7486900367CFA /* FoodPostManager.swift */,
+				6153E7B02CDA7D1200367CFA /* FoodDetectionManager.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -250,6 +259,9 @@
 			isa = PBXGroup;
 			children = (
 				6153E7982CD6B09A00367CFA /* FoodCalories.json */,
+				6153E7B42CDA832A00367CFA /* rice_detector.mlpackage */,
+				6153E7B22CDA830500367CFA /* kimchi_stew_detector.mlpackage */,
+				6153E7AE2CDA7BE000367CFA /* kimchi_detector.mlpackage */,
 				6153E7942CD6AD1900367CFA /* best-2.mlpackage */,
 				6153E7962CD6AD1D00367CFA /* Middle_Finger_Detection.mlpackage */,
 				618F33692CAEDD88009D071B /* Info.plist */,
@@ -364,6 +376,7 @@
 				6104BE1C2CC9475700F6CF69 /* SettingController.swift in Sources */,
 				6127A7CC2CCB58CE002F0122 /* RecordDetailController.swift in Sources */,
 				618F33602CAEDD87009D071B /* ViewController.swift in Sources */,
+				6153E7B52CDA832A00367CFA /* rice_detector.mlpackage in Sources */,
 				6153E7842CD6AC2600367CFA /* FoodPortionOption.swift in Sources */,
 				6153E7852CD6AC2600367CFA /* AddCell.swift in Sources */,
 				6153E7862CD6AC2600367CFA /* AmountCell.swift in Sources */,
@@ -373,6 +386,7 @@
 				6153E78A2CD6AC2600367CFA /* FoodModel.swift in Sources */,
 				6153E78B2CD6AC2600367CFA /* SelectImageViewController.swift in Sources */,
 				6153E78C2CD6AC2600367CFA /* FoodCalorieManager.swift in Sources */,
+				6153E7AF2CDA7BE000367CFA /* kimchi_detector.mlpackage in Sources */,
 				6153E78D2CD6AC2600367CFA /* ImageSectionView.swift in Sources */,
 				6153E78E2CD6AC2600367CFA /* FoodCell.swift in Sources */,
 				6153E78F2CD6AC2600367CFA /* MealTimeSelectionView.swift in Sources */,
@@ -389,6 +403,7 @@
 				618F335C2CAEDD87009D071B /* AppDelegate.swift in Sources */,
 				61E53E3F2CD0042000E8DBB1 /* AuthService.swift in Sources */,
 				6153E7A12CD7F1AE00367CFA /* PostDetailController.swift in Sources */,
+				6153E7B32CDA830500367CFA /* kimchi_stew_detector.mlpackage in Sources */,
 				6127A7CA2CCB5869002F0122 /* AddFoodController.swift in Sources */,
 				6104BE172CC75FFB00F6CF69 /* MainTabController.swift in Sources */,
 				61E53E392CCFFCD300E8DBB1 /* User.swift in Sources */,
@@ -398,6 +413,7 @@
 				61E53E3B2CCFFD7A00E8DBB1 /* UserService.swift in Sources */,
 				61D705AE2CCE85AF00640F47 /* LoginController.swift in Sources */,
 				6153E7A52CD811A200367CFA /* CustomTabBar.swift in Sources */,
+				6153E7B12CDA7D1200367CFA /* FoodDetectionManager.swift in Sources */,
 				6153E7AB2CD8F09D00367CFA /* ImageCache.swift in Sources */,
 				618F335E2CAEDD87009D071B /* SceneDelegate.swift in Sources */,
 				6153E7A32CD80FCC00367CFA /* CalendarViewController.swift in Sources */,
@@ -564,8 +580,10 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -573,9 +591,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = skp.app.TodayCalorie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -593,8 +614,10 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -602,9 +625,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = skp.app.TodayCalorie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

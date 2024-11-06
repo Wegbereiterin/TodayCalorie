@@ -1,32 +1,47 @@
 [
-    {
-        "name": "Apple",
-        "gram": 182,
-        "calorie": 95
-    },
-    {
-        "name": "Banana",
-        "gram": 118,
-        "calorie": 105
-    },
-    {
-        "name": "Grape",
-        "gram": 2,
-        "calorie": 2
-    },
-    {
-        "name": "Orange",
-        "gram": 131,
-        "calorie": 62
-    },
-    {
-        "name": "Pineapple",
-        "gram": 165,
-        "calorie": 83
-    },
-    {
-        "name": "Watermelon",
-        "gram": 286,
-        "calorie": 86
-    }
+   {
+       "name": "Apple",
+       "gram": 182,
+       "calorie": 95
+   },
+   {
+       "name": "Banana",
+       "gram": 118,
+       "calorie": 105
+   },
+   {
+       "name": "Grape",
+       "gram": 2,
+       "calorie": 2
+   },
+   {
+       "name": "Orange",
+       "gram": 131,
+       "calorie": 62
+   },
+   {
+       "name": "Pineapple",
+       "gram": 165,
+       "calorie": 83
+   },
+   {
+       "name": "Watermelon",
+       "gram": 286,
+       "calorie": 86
+   },
+   {
+       "name": "kimchi",
+       "gram": 100,
+       "calorie": 30
+   },
+   {
+       "name": "rice",
+       "gram": 200,
+       "calorie": 300
+   },
+   {
+       "name": "kimchijjigae",
+       "gram": 300,
+       "calorie": 150
+   }
 ]
